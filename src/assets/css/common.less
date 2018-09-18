@@ -1,0 +1,64 @@
+@black:rgba(0,0,0,0.85);
+@gray:rgba(0,0,0,0.65);
+@graymore:rgba(0,0,0,0.45);
+@block:#ffffff;
+@titleHeight:52px;
+@fontSmall:12px;
+@fontMiddle:14px;
+@fontBig:16px;
+
+// 元素垂直居中
+.vertical_middle{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+// 横向flex
+.flexRow{
+  display: flex;
+  flex-direction: row;
+}
+// 纵向flex
+.flexColumn{
+  display: flex;
+  flex-direction: column;
+}
+// 清浮动
+.clearfix{
+  &::after{
+    content: '';
+    width: 0;
+    height: 0;
+    display: block;
+    clear: both;
+  }
+}
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar {
+  width: 6px;
+  height: 8px;
+  background-color: rgba(0, 0, 0, 0);
+}
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+  border-radius: 4px;
+  background-color: transparent;
+}
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+  height: 4px;
+  border-radius: 2px;
+  background-color: #ccc;
+}
+
+// 路由动画
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s;
+}
+.fade-enter {
+  opacity: 0.6;
+}
+.fade-leave-to {
+  opacity: 0.6;
+}
