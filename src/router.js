@@ -32,6 +32,12 @@ export default new Router({
     {
       path: '*',
       redirect: '/error/404'
+    },
+    // 登录
+    {
+      path: '/login',
+      name: '登录',
+      component: () => import('./views/login.vue')
     }
   ]
 })

@@ -10,7 +10,7 @@
   <div class="container">
     <!-- 顶栏容器 -->
     <header-com class="header"></header-com>
-    <div class="content">
+    <div class="body">
       <!-- 路由区域 -->
       <transition name="fade"  mode="out-in">
           <router-view class="router"></router-view>
@@ -36,24 +36,20 @@ export default {
 </script>
 
 <style lang="less">
-  // 通用css
-  @import '~@/assets/css/common.less';
   // 修改elementui默认样式
   @import '~@/assets/css/editElementui.less';
-  .container {
-    width: 100%;
-    height: 100%;
-    .header {
-      width: 100%;
-      height: 60px;
-      background-color: rgba(255, 255, 255, 0.4);
-      box-shadow: 0 0 1px rgba(0, 0, 0, 0.25);
-      transition: background-color 0.3s ease-in-out;
-    }
-    .content {
-      display: flex;
-      height: calc(100% - 60px);
-      width: 100%;
-    }
+  html,body{margin:0;padding:0;}
+  html{
+    height:100%;
+  }
+  body{
+    height:100%;
+    overflow-x:auto;
+    overflow-y:auto;
+  }
+  .container{
+    position: relative;
+    min-height:100%;
+    min-width: 1366px;
   }
 </style>
