@@ -6,7 +6,7 @@
  */
 
 <template>
-  <div class="header">
+  <div v-if="$route.fullPath!=='/login'">
   </div>
 </template>
 
@@ -16,10 +16,9 @@ export default {
   data () {
     return {}
   },
-  methods: {}
+  methods: {},
+  created () {
+    console.log(this.$route)
+  }
 }
 </script>
-
-<style lang="less" scoped>
-@import '~@/assets/css/common.less';
-</style>

@@ -12,5 +12,5 @@
 </template>
 
 <style lang="less" scoped>
-@import '~@/assets/css/common.less';
+
 </style>

@@ -30,8 +30,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import '~@/assets/css/common.less';
-
   .home {
     background: #EDEDED;
     box-sizing: content-box;

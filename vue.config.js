@@ -17,23 +17,20 @@ module.exports = {
         minRatio: 0.8
       })
     ]
-  }
-  /*
-  ,
+  },
   devServer: {
     open: process.platform === 'darwin',
     host: '0.0.0.0',
-    port: 8888,
+    port: 8080,
     https: false,
     hotOnly: false,
     // 配置代理转发
     proxy: {
-      '/peopleMediate': {
-        target: 'http://192.168.22.137:8850',
+      '/SearchCase': {
+        target: 'http://192.168.22.137:8556',
         changeOrigin: true
       }
     },
     before: app => {}
   }
-  */
 }
