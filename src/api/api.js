@@ -28,3 +28,5 @@ export const login = (params) => post(`${baseUrl}/user/login`, params)
 export const register = (params) => post(`${baseUrl}/user/register`, params)
 // 首次登录用户推荐
 export const focusType = (params) => post(`${baseUrl}/user/focusType`, params)
+// 验证是否登录
+export const loginStatus = (params) => get(`${baseUrl}/user/loginStatus`, {})

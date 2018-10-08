@@ -38,6 +38,24 @@ export default new Router({
       path: '/login',
       name: '登录',
       component: () => import('./views/login.vue')
+    },
+    // 调解协议书详情页
+    {
+      path: '/MediationAgreementDetail',
+      name: '调解协议书详情',
+      component: () => import('./views/mediationAgreementDetail.vue')
+    },
+    // 裁判文书详情页
+    {
+      path: '/judgmentDocumentDetail',
+      name: '裁判文书详情',
+      component: () => import('./views/judgmentDocumentDetail.vue')
+    },
+    // 搜索列表页
+    {
+      path: '/searchList',
+      name: '搜索列表页',
+      component: () => import('./views/searchList.vue')
     }
   ]
 })

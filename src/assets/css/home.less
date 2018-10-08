@@ -1,0 +1,22 @@
+@import './common.less';
+.ul{
+  width:1200px;
+  height:400px;
+  background:white;
+  perspective:3000px;
+  .li{
+    font-size: 32px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: 6s linear;
+    // transition-property:transform,opacity;
+    cursor: pointer;
+    &:hover{
+      transition-property:transform;
+      color: black;
+      z-index: 2;
+      opacity: 1;
+    }
+  }
+}

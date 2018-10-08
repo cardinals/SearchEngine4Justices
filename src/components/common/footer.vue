@@ -7,10 +7,15 @@
 
 <template>
   <div class="footer">
-
+    <div class="line1">
+      <span class="span">帮助</span>
+      <span class="span">隐私</span>
+      <span class="span">条款</span>
+    </div>
+    <div class="line2">copyright @上海市司法局大数据实验室 | 银江股份有限公司</div>
   </div>
 </template>
 
-<style lang="less" scoped>
-
+<style lang="less">
+ @import '~@/assets/css/footer.less';
 </style>
