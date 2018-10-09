@@ -6,13 +6,13 @@
  */
 
 <template>
-  <div class="header" v-if="$route.fullPath!=='/login'">
-    <div class="main">
-      <div class="logo_c clearfix">
+  <div class="header" v-if="$route.fullPath!=='/login'" :style="{'margin-bottom':$route.fullPath ==='/home'?'0':'23px'}">
+    <div class="main" >
+      <div v-if="$route.fullPath!=='/home'" class="logo_c clearfix">
         <i class="logo"></i>
         <span class="title">同案同调</span>
       </div>
-      <div class="search_c">
+      <div  v-if="$route.fullPath!=='/home'" class="search_c">
         <div class="select_c">
            <el-select v-model="value" placeholder="请选择">
             <el-option

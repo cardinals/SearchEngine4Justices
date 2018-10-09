@@ -7,10 +7,10 @@
 
 <template>
   <!-- 外层容器，当子元素中包含 <el-header> 或 <el-footer> 时，全部子元素会垂直上下排列，否则会水平左右排列。 -->
-  <div class="container">
+  <div class="container" :style="{'background':$route.fullPath ==='/home'?'white':'#f0f0f0'}">
     <!-- 顶栏容器 -->
     <header-com></header-com>
-    <div class="body">
+    <div class="body" :style="{'width':$route.fullPath ==='/home'?'100%':'1200px'}">
       <!-- 路由区域 -->
       <transition name="fade"  mode="out-in">
           <router-view class="router"></router-view>

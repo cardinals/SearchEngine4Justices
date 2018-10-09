@@ -7,116 +7,146 @@
 
 <template>
   <div class="home">
-    <div class="ul">
-      <div class="li" :style="state?random():random()">老年人的赡养纠纷</div>
-      <div class="li" :style="state?random():random()">房子漏水纠纷怎么处理</div>
-      <div class="li" :style="state?random():random()">房产如何继承</div>
-      <div class="li" :style="state?random():random()">交通事故保险赔偿纠纷</div>
-      <div class="li" :style="state?random():random()">被宠物狗咬伤</div>
-      <div class="li" :style="state?random():random()">偷税漏税</div>
-      <div class="li" :style="state?random():random()">老年人的赡养纠纷</div>
-      <div class="li" :style="state?random():random()">房子漏水纠纷怎么处理</div>
-      <div class="li" :style="state?random():random()">房产如何继承</div>
-      <div class="li" :style="state?random():random()">交通事故保险赔偿纠纷</div>
-      <div class="li" :style="state?random():random()">被宠物狗咬伤</div>
-      <div class="li" :style="state?random():random()">偷税漏税</div>
-      <div class="li" :style="state?random():random()">老年人的赡养纠纷</div>
-      <div class="li" :style="state?random():random()">房子漏水纠纷怎么处理</div>
-      <div class="li" :style="state?random():random()">房产如何继承</div>
-      <div class="li" :style="state?random():random()">交通事故保险赔偿纠纷</div>
-      <div class="li" :style="state?random():random()">被宠物狗咬伤</div>
-      <div class="li" :style="state?random():random()">偷税漏税</div>
-      <div class="li" :style="state?random():random()">老年人的赡养纠纷</div>
-      <div class="li" :style="state?random():random()">房子漏水纠纷怎么处理</div>
-      <div class="li" :style="state?random():random()">房产如何继承</div>
-      <div class="li" :style="state?random():random()">交通事故保险赔偿纠纷</div>
-      <div class="li" :style="state?random():random()">被宠物狗咬伤</div>
-      <div class="li" :style="state?random():random()">偷税漏税</div>
-      <div class="li" :style="state?random():random()">老年人的赡养纠纷</div>
-      <div class="li" :style="state?random():random()">房子漏水纠纷怎么处理</div>
-      <div class="li" :style="state?random():random()">房产如何继承</div>
-      <div class="li" :style="state?random():random()">交通事故保险赔偿纠纷</div>
-      <div class="li" :style="state?random():random()">被宠物狗咬伤</div>
-      <div class="li" :style="state?random():random()">偷税漏税</div>
-      <div class="li" :style="state?random():random()">老年人的赡养纠纷</div>
-      <div class="li" :style="state?random():random()">房子漏水纠纷怎么处理</div>
-      <div class="li" :style="state?random():random()">房产如何继承</div>
-      <div class="li" :style="state?random():random()">交通事故保险赔偿纠纷</div>
-      <div class="li" :style="state?random():random()">被宠物狗咬伤</div>
-      <div class="li" :style="state?random():random()">偷税漏税</div>
-      <div class="li" :style="state?random():random()">老年人的赡养纠纷</div>
-      <div class="li" :style="state?random():random()">房子漏水纠纷怎么处理</div>
-      <div class="li" :style="state?random():random()">房产如何继承</div>
-      <div class="li" :style="state?random():random()">交通事故保险赔偿纠纷</div>
-      <div class="li" :style="state?random():random()">被宠物狗咬伤</div>
-      <div class="li" :style="state?random():random()">偷税漏税</div>
-      <div class="li" :style="state?random():random()">老年人的赡养纠纷</div>
-      <div class="li" :style="state?random():random()">房子漏水纠纷怎么处理</div>
-      <div class="li" :style="state?random():random()">房产如何继承</div>
-      <div class="li" :style="state?random():random()">交通事故保险赔偿纠纷</div>
-      <div class="li" :style="state?random():random()">被宠物狗咬伤</div>
-      <div class="li" :style="state?random():random()">偷税漏税</div>
-      <div class="li" :style="state?random():random()">老年人的赡养纠纷</div>
-      <div class="li" :style="state?random():random()">房子漏水纠纷怎么处理</div>
-      <div class="li" :style="state?random():random()">房产如何继承</div>
-      <div class="li" :style="state?random():random()">交通事故保险赔偿纠纷</div>
-      <div class="li" :style="state?random():random()">被宠物狗咬伤</div>
-      <div class="li" :style="state?random():random()">偷税漏税</div>
-      <div class="li" :style="state?random():random()">老年人的赡养纠纷</div>
-      <div class="li" :style="state?random():random()">房子漏水纠纷怎么处理</div>
-      <div class="li" :style="state?random():random()">房产如何继承</div>
-      <div class="li" :style="state?random():random()">交通事故保险赔偿纠纷</div>
-      <div class="li" :style="state?random():random()">被宠物狗咬伤</div>
-      <div class="li" :style="state?random():random()">偷税漏税</div>
+    <div class="home_c">
+      <div class="logo"></div>
+      <div class="types">
+        <span class="span active">调解案例</span>
+        <span class="span">调解协议</span>
+        <span class="span">裁判文书</span>
+        <span class="span">法律法规</span>
+      </div>
+      <div class="search_c">
+        <el-autocomplete
+            class="inline-input"
+            v-model="searchVal"
+            :fetch-suggestions="querySearch"
+            placeholder="请输入关键词或案件详情"
+            @select="handleSelect"
+          ></el-autocomplete>
+        <div class="search_btn">
+          <i class="icon el-icon-search"></i>
+        </div>
+      </div>
+      <div class="number_c">
+        <div class="box img1">
+          <span class="num">1229<em>篇</em></span>
+          <span class="name">精品案例</span>
+        </div>
+        <i class="border"></i>
+        <div class="box img2">
+          <span class="num">1229<em>篇</em></span>
+          <span class="name">裁判文书</span>
+        </div>
+        <i class="border"></i>
+        <div class="box img3">
+          <span class="num">1229<em>篇</em></span>
+          <span class="name">协议书总量</span>
+        </div>
+        <i class="border"></i>
+        <div class="box img4">
+          <span class="num">1229<em>次</em></span>
+          <span class="name">访问总量</span>
+        </div>
+      </div>
+      <div class="bottom_c">
+        <div class="nav">
+          <div class="button active">推荐</div>
+          <div class="button">收藏</div>
+        </div>
+        <div class="recommend clearfix">
+          <div class="re_left">
+            <div class="title">
+              <i class="border"></i>
+              <span>热门检索</span>
+              <i class="fire"></i>
+            </div>
+            <div class="ul">
+              <div class="li">
+                <span class="sort">1</span>
+                <span class="content">老年人的赡养纠纷赡养纠纷赡养纠纷</span>
+                <i class="new"></i>
+              </div>
+              <div class="li">
+                <span class="sort">2</span>
+                <span class="content">老纠纷纷赡养纠纷</span>
+                <i class="new"></i>
+              </div>
+              <div class="li">
+                <span class="sort">3</span>
+                <span class="content">老年人的纷赡养纠纷</span>
+                <i class="new"></i>
+              </div>
+              <div class="li">
+                <span class="sort">4</span>
+                <span class="content">老年纠纷赡养纠纷</span>
+              </div>
+              <div class="li">
+                <span class="sort">5</span>
+                <span class="content">老年纠纷赡养纠纷</span>
+              </div>
+            </div>
+          </div>
+           <div class="re_right">
+            <div class="title">
+              <i class="border"></i>
+              <span>常见检索</span>
+            </div>
+            <div class="ul">
+              <div class="li">
+                <span class="sort">1</span>
+                <span class="content">老年人的赡养纠纷赡养纠纷赡养纠纷</span>
+              </div>
+              <div class="li">
+                <span class="sort">2</span>
+                <span class="content">老纠纷纷赡养纠纷</span>
+              </div>
+              <div class="li">
+                <span class="sort">3</span>
+                <span class="content">老年人的纷赡养纠纷</span>
+              </div>
+              <div class="li">
+                <span class="sort">4</span>
+                <span class="content">老年纠纷赡养纠纷</span>
+              </div>
+              <div class="li">
+                <span class="sort">5</span>
+                <span class="content">老年纠纷赡养纠纷</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="collection"></div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-// import {area} from '@/utils/dictionaryMapping'
-// import {pickerOptions, color} from '@/utils/index'
-// import {homeData} from '@/api/api'
-
 export default {
   name: 'home',
   data () {
     return {
-      data: [],
-      state: true,
-      timer: ''
     }
-  },
-  methods: {
-    random () {
-      let x = 50 + parseInt(Math.random() * 850) + 'px'
-      let y = 50 + parseInt(Math.random() * 300) + 'px'
-      let z = parseInt(Math.random() * 200) + 'px'
-      let opacity = parseInt(z) / 200 > 0.2 ? parseInt(z) / 200 : 0.2
-      let scale = parseInt(z) / 200 > 0.6 ? parseInt(z) / 200 : 0.6
-      let r = parseInt(Math.random() * 250)
-      let g = parseInt(Math.random() * 250)
-      let b = parseInt(Math.random() * 250)
-      return {
-        'color': 'rgb(' + r + ',' + g + ',' + b + ')',
-        'opacity': opacity,
-        'transform': 'translate3d(' + x + ',' + y + ',' + z + ') scale(' + scale + ')'
-      }
-    }
-  },
-  watch: {},
-  created () {
-  },
-  mounted () {
-    this.timer = setTimeout(() => {
-      this.state = !this.state
-      clearTimeout(this.timer)
-    }, 0)
-    setInterval(() => {
-      this.state = !this.state
-    }, 6000)
   }
 }
 </script>
+<style lang="less">
+.home{
+  .inline-input{
+    float: left;
+    height: 65px;
+    width: calc(100% - 84px);
+    border-radius:4px 0px 0px 4px;
+    border:1px solid rgba(231,229,229,1);
+  }
+  .el-input__inner{
+    font-size:18px;
+    height: 63px;
+    border:0;
+    border-radius:4px 0px 0px 4px;
+  }
+}
+</style>
 
 <style lang="less" scoped>
   @import '~@/assets/css/home.less';

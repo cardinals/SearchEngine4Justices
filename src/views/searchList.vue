@@ -229,6 +229,20 @@ export default {
 }
 </script>
 
+<style lang="less">
+  .el-pager{
+    .number{
+      background-color: #ffffff!important;
+    }
+    .active{
+      background-color: #669AFF!important;
+    }
+  }
+  .el-pagination button{
+    background-color:#ffffff!important;
+  }
+</style>
+
 <style lang="less" scoped>
   @import '~@/assets/css/searchList.less';
 </style>
