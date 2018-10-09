@@ -23,7 +23,7 @@
 export default {
   data () {
     return {
-      showList: true,
+      showList: false,
       showWhich: '#jibenxinxi',
       arr: [
         {id: '#jibenxinxi', name: '基本信息'},
