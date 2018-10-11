@@ -27,7 +27,7 @@ module.exports = {
     // 配置代理转发
     proxy: {
       '/SearchCase': {
-        target: 'http://192.168.22.137:8556',
+        target: 'http://192.168.22.137:8558',
         changeOrigin: true
       }
     },

@@ -40,9 +40,9 @@ axios.interceptors.response.use(
     // 关闭加载遮罩
     store.dispatch({ type: 'app/changeLoadingStatus', amount: false })
     // 未登录状态跳转登录页
-    if (response.data.code === 10) {
-      Message({ type: 'info', message: '10 未登录！', duration: 5000 })
-    }
+    // if (response.data.code === 10) {
+    //   Message({ type: 'info', message: '10 未登录！', duration: 5000 })
+    // }
     return Promise.resolve(response)
   },
   error => {

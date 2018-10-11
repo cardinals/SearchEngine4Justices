@@ -51,6 +51,18 @@ export default new Router({
       name: '裁判文书详情',
       component: () => import('./views/judgmentDocumentDetail.vue')
     },
+    // 调解案件详情页
+    {
+      path: '/mediationCaseDetails',
+      name: '调解案件详情',
+      component: () => import('./views/mediationCaseDetails.vue')
+    },
+    // 法律法规详情页
+    {
+      path: '/lawsDetail',
+      name: '法律法规详情',
+      component: () => import('./views/lawsDetail.vue')
+    },
     // 搜索列表页
     {
       path: '/searchList',

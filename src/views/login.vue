@@ -15,7 +15,7 @@
         </div>
         <div class="common-input">
           <label class="l-label">密码：</label>
-          <input @focus="focusFn($event)" class="l-input" placeholder="请输入密码" type="password" v-model="login_password"/>
+          <input @keyup.enter="goLogin" @focus="focusFn($event)" class="l-input" placeholder="请输入密码" type="password" v-model="login_password"/>
         </div>
         <div class="rem-password">
           <input v-model="rem_password" class='checkbox' type="checkbox" checked>
@@ -35,17 +35,18 @@
         </div>
         <div class="common-input">
           <label class="l-label">密码：</label>
-          <input @focus="focusFn($event)" class="l-input" placeholder="请输入密码" type="password" v-model="registor_password"/>
+          <input @keyup.enter="goRegistor" @focus="focusFn($event)" class="l-input" placeholder="请输入密码" type="password" v-model="registor_password"/>
         </div>
         <div class="common-input">
-          <input class="l-yzm" placeholder="请输入验证码" type="text" v-model="registor_yzm"/>
-          <img @click="getYzm" class="yzm" />
+          <input @keyup.enter="goRegistor" class="l-yzm" placeholder="请输入验证码" type="text" v-model="registor_yzm"/>
+          <img  @click="getYzm" class="yzm" />
         </div>
         <div class="common-input">
           <div class="common-button" @click="goRegistor">注册</div>
         </div>
       </div>
     </div>
+    <!-- 首次登录弹框 -->
     <div class="module" v-show="ifShowModule==true">
       <div class="main">
         <div class="title">
@@ -55,7 +56,7 @@
           <div class="desc">请选择感兴趣的调解案件类型</div>
           <div class="types clearfix" id="login_choose">
             <div v-for="(item,index) in likesArr" class="once" :key="index">
-              <span @click="choose(item)" :class="{'choosed':item.choose===true}">{{item.mediate_type_name}}</span>
+              <span @click="choose(item)" :class="{'choosed':item.choose===true}">{{item.typeName}}<i class="img" v-show = item.choose></i></span>
             </div>
           </div>
         </div>
@@ -155,7 +156,7 @@ export default {
         console.log(err)
       })
     },
-    // 获取验证马
+    // 获取验证码
     getYzm () {
       imgCheck().then((res) => {
         document.getElementsByClassName('yzm')[0].src = 'data:image/png;base64,' + res
@@ -167,11 +168,11 @@ export default {
     choose (item) {
       let index = this.likesArr.indexOf(item)
       this.likesArr[index].choose = !this.likesArr[index].choose
-      let indexChoose = this.chooseArr.indexOf(item.mediate_type)
+      let indexChoose = this.chooseArr.indexOf(item.type)
       if (indexChoose !== -1) {
         this.chooseArr.splice(indexChoose, 1)
       } else {
-        this.chooseArr.push(item.mediate_type)
+        this.chooseArr.push(item.type)
       }
     },
     // 首次登陆确定按钮

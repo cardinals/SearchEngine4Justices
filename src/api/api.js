@@ -29,4 +29,10 @@ export const register = (params) => post(`${baseUrl}/user/register`, params)
 // 首次登录用户推荐
 export const focusType = (params) => post(`${baseUrl}/user/focusType`, params)
 // 验证是否登录
-export const loginStatus = (params) => get(`${baseUrl}/user/loginStatus`, {})
+export const loginStatus = () => get(`${baseUrl}/user/loginStatus`, {})
+// 注销接口
+export const logout = () => get(`${baseUrl}/user/logout`, {})
+// 中文提示
+export const tipsCN = (params) => get(`${baseUrl}/suggest/hanZi`, params)
+// 英文提示
+export const tipsEN = (params) => get(`${baseUrl}/suggest/pinYin`, params)

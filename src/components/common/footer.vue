@@ -6,8 +6,8 @@
  */
 
 <template>
-  <div class="footer">
-    <div class="line1">
+  <div class="footer" :class="{'footer2':$route.fullPath==='/login'||$route.fullPath==='/home'}">
+    <div v-if="$route.fullPath!=='/login'&&$route.fullPath!=='/home'" class="line1">
       <span class="span">帮助</span>
       <span class="span">隐私</span>
       <span class="span">条款</span>

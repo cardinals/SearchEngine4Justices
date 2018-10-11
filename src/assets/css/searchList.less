@@ -72,6 +72,9 @@
       padding:0 9px;
       border-radius: 2px;
       cursor: pointer;
+      &:hover{
+        background: #F64242;
+      }
     }
     .span2{
       height: 25px;
@@ -102,7 +105,14 @@
           line-height: 36px;
           color:@black;
           font-size: 18px;
+          .img{
+            float: left;
+            width: 18px;
+            height: 36px;
+            background:url('../images/searchList/案件分类.png') center center no-repeat;
+          }
           span{
+            float: left;
             margin-left: 9px;
             font-size: 18px;
           }
@@ -122,8 +132,15 @@
           color:@black;
           font-size: 18px;
           span{
+            float: left;
             margin-left: 9px;
             font-size: 18px;
+          }
+          .img{
+            float: left;
+            width: 18px;
+            height: 36px;
+            background:url('../images/searchList/关键词.png') center center no-repeat;
           }
         }
         .main{
@@ -177,7 +194,14 @@
           border-left: 1px solid @graymore;
           color:@black;
           span{
+            float: left;
             margin-left: 4px;
+          }
+          .img{
+            float: left;
+            width: 18px;
+            height: 22px;
+            background: url('../images/searchList/类案分析.png') center center no-repeat;
           }
         }
         .num{

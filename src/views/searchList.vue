@@ -18,7 +18,7 @@
       <div class="tree">
         <div class="classify">
           <div class="titles">
-            <i style="font-size:18px" class="el-icon-menu"></i>
+            <div class="img"></div>
             <span>案件分类</span>
           </div>
           <el-tree
@@ -31,7 +31,7 @@
         </div>
         <div class="keyword">
           <div class="titles">
-            <i style="font-size:18px" class="el-icon-more"></i>
+            <div class="img"></div>
             <span>关键词</span>
           </div>
           <div class="main">
@@ -58,7 +58,7 @@
             <i class="el-icon-download"></i>
           </div>
           <div class="echarts">
-            <i class="el-icon-menu"></i>
+            <div class="img"></div>
             <span>类案分析</span>
           </div>
           <div class="num">共130篇</div>

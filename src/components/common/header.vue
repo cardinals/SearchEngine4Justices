@@ -6,7 +6,7 @@
  */
 
 <template>
-  <div class="header" v-if="$route.fullPath!=='/login'" :style="{'margin-bottom':$route.fullPath ==='/home'?'0':'23px'}">
+  <div class="header" :style="{'margin-bottom':$route.fullPath ==='/home'?'0':'23px'}">
     <div class="main" >
       <div v-if="$route.fullPath!=='/home'" class="logo_c clearfix">
         <i class="logo"></i>
@@ -40,12 +40,13 @@
       <div class="menu_c">
         <div class="icon"></div>
         <div class="menu clearfix">
-          <el-dropdown  trigger="click">
+          <el-dropdown @command="goLogin" trigger="click">
             <span class="el-dropdown-link">
-              林峰<i class="el-icon-arrow-down el-icon--right"></i>
+              {{ifLogin?'已登录':'未登录'}}
+              <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>注销</el-dropdown-item>
+              <el-dropdown-item :command='ifLogin'>{{ifLogin?'注销':'登录'}}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -55,12 +56,12 @@
 </template>
 
 <script>
-// import { loginStatus } from '@/api/api.js'
+import { mapState, mapActions } from 'vuex'
+import {Message} from 'element-ui'
 export default {
   components: {},
   data () {
     return {
-      ifLogin: false,
       options: [{
         value: '01',
         label: '调解案例'
@@ -79,18 +80,40 @@ export default {
     }
   },
   computed: {
-
+    ...mapState('header', {
+      ifLogin: state => state.ifLogin
+    })
   },
   methods: {
-
+    ...mapActions({
+      changeLoginAsync: 'header/changeLoginAsync',
+      logoutAsync: 'header/logoutAsync'
+    }),
+    // 注销或登录按钮
+    goLogin (command) {
+      let _this = this
+      if (command) {
+        _this.logoutAsync().then((res) => {
+          if (res.code === 1) {
+            Message({
+              message: res.message,
+              type: 'success'
+            })
+            _this.$router.push('/login')
+          } else {
+            Message({
+              message: res.message,
+              type: 'warning'
+            })
+          }
+        })
+      } else {
+        _this.$router.push('/login')
+      }
+    }
   },
-  created () {
-    // let _this = this
-    // loginStatus().then((res) => {
-    //   if (res.code === 1) {
-    //     _this.ifLogin = true
-    //   }
-    // })
+  mounted () {
+    this.changeLoginAsync()
   }
 }
 </script>

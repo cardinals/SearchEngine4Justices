@@ -1,4 +1,5 @@
 <template>
+  <!-- 调解协议详情 -->
   <div class="mediationAD clearfix">
     <!-- 锚点组件 -->
     <anchor-point></anchor-point>
