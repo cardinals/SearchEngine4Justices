@@ -15,6 +15,7 @@ axios.defaults.headers.get['Content-Type'] = 'application/json'
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.headers.put['Content-Type'] = 'application/json'
 axios.defaults.headers.delete['Content-Type'] = 'application/json'
+axios.defaults.withCredentials = true
 
 // 请求超时时间
 axios.defaults.timeout = 20000

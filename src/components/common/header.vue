@@ -25,13 +25,18 @@
         </div>
         <div class="border"></div>
         <div class="search">
-          <!-- <el-autocomplete
+          <el-autocomplete
             class="inline-input"
-            v-model="searchVal"
+            v-model="search"
             :fetch-suggestions="querySearch"
-            placeholder="请输入内容"
+            placeholder="请输入关键词或案件详情"
             @select="handleSelect"
-          ></el-autocomplete> -->
+            :trigger-on-focus="false"
+          >
+          <template slot-scope="props">
+            <div class="name">{{ props.item.text }}</div>
+          </template>
+          </el-autocomplete>
         </div>
         <div class="search_btn">
           <i class="el-icon-search"></i>
@@ -57,6 +62,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { tipsCN, tipsEN } from '@/api/api.js'
 import {Message} from 'element-ui'
 export default {
   components: {},
@@ -76,7 +82,7 @@ export default {
         label: '法律条文'
       }],
       value: '01',
-      searchVal: ''
+      search: ''
     }
   },
   computed: {
@@ -109,6 +115,33 @@ export default {
         })
       } else {
         _this.$router.push('/login')
+      }
+    },
+    // 获取汉字
+    ifCN (v) {
+      if (v === '' || (/^\s*$/gi).test(v)) return ''
+      let res = v.match(/[\u4e00-\u9fa5]*/g)
+      if (res) {
+        return res.join('')
+      } else return false
+    },
+    // 选择下拉列表搜索条件
+    handleSelect (select) {
+      console.log(select)
+      this.search = select.text
+    },
+    // 搜索提示
+    querySearch (queryString, callback) {
+      console.log(this.ifCN(queryString))
+      let CN = this.ifCN(queryString)
+      if (CN) {
+        tipsCN({'prefix': CN}).then((res) => {
+          callback(res.data)
+        })
+      } else {
+        tipsEN({'prefix': queryString}).then((res) => {
+          callback(res.data)
+        })
       }
     }
   },

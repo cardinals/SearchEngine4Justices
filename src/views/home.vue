@@ -75,56 +75,22 @@
               <i class="fire"></i>
             </div>
             <div class="ul">
-              <div class="li">
-                <span class="sort">1</span>
-                <span class="content">老年人的赡养纠纷赡养纠纷赡养纠纷</span>
-                <i class="new"></i>
-              </div>
-              <div class="li">
-                <span class="sort">2</span>
-                <span class="content">老纠纷纷赡养纠纷</span>
-                <i class="new"></i>
-              </div>
-              <div class="li">
-                <span class="sort">3</span>
-                <span class="content">老年人的纷赡养纠纷</span>
-                <i class="new"></i>
-              </div>
-              <div class="li">
-                <span class="sort">4</span>
-                <span class="content">老年纠纷赡养纠纷</span>
-              </div>
-              <div class="li">
-                <span class="sort">5</span>
-                <span class="content">老年纠纷赡养纠纷</span>
+              <div class="li" v-for="(item,index) in hotArr" :key="index">
+                <span class="sort">{{index+1}}</span>
+                <span class="content">{{item.title}}</span>
+                <i class="new" v-if="index<=2"></i>
               </div>
             </div>
           </div>
-           <div class="re_right">
+           <div class="re_right" v-if="commonArr.length>0">
             <div class="title">
               <i class="border"></i>
               <span>常见检索</span>
             </div>
             <div class="ul">
-              <div class="li">
-                <span class="sort">1</span>
-                <span class="content">老年人的赡养纠纷赡养纠纷赡养纠纷</span>
-              </div>
-              <div class="li">
-                <span class="sort">2</span>
-                <span class="content">老纠纷纷赡养纠纷</span>
-              </div>
-              <div class="li">
-                <span class="sort">3</span>
-                <span class="content">老年人的纷赡养纠纷</span>
-              </div>
-              <div class="li">
-                <span class="sort">4</span>
-                <span class="content">老年纠纷赡养纠纷</span>
-              </div>
-              <div class="li">
-                <span class="sort">5</span>
-                <span class="content">老年纠纷赡养纠纷</span>
+              <div class="li" v-for="(item,index) in commonArr" :key="index">
+                <span class="sort">{{index+1}}</span>
+                <span class="content">{{item.title}}</span>
               </div>
             </div>
           </div>
@@ -172,16 +138,33 @@
 </template>
 
 <script>
-import { tipsCN, tipsEN } from '@/api/api.js'
+import {mapState} from 'vuex'
+import { tipsCN, tipsEN, recommend, collectionList } from '@/api/api.js'
 export default {
   name: 'home',
   data () {
     return {
       showWhich: 'recommend',
-      search: ''
+      search: '',
+      commonArr: [],
+      hotArr: [],
+      collectionArr: []
     }
   },
   computed: {
+    ...mapState('header', {
+      ifLogin: state => state.ifLogin
+    })
+  },
+  watch: {
+    // 监控一下header的是否登录状态,注意这里不要用箭头函数导致this指向有问题
+    ifLogin: function (to, from) {
+      if (to) {
+        this.collectionListInit(1).then((res) => {
+          console.log(res)
+        })
+      }
+    }
   },
   methods: {
     // 获取汉字
@@ -192,9 +175,12 @@ export default {
         return res.join('')
       } else return false
     },
-    handleSelect () {
-
+    // 选择下拉列表搜索条件
+    handleSelect (select) {
+      console.log(select)
+      this.search = select.text
     },
+    // 搜索提示
     querySearch (queryString, callback) {
       console.log(this.ifCN(queryString))
       let CN = this.ifCN(queryString)
@@ -207,6 +193,43 @@ export default {
           callback(res.data)
         })
       }
+    },
+    // 推荐列表
+    recommendInit () {
+      return new Promise((resolve, reject) => {
+        recommend().then((res) => {
+          resolve(res)
+        }).catch((err) => {
+          reject(err)
+        })
+      })
+    },
+    // 收藏列表
+    collectionListInit (page) {
+      return new Promise((resolve, reject) => {
+        collectionList({'pagenum': page, 'pagesize': 5}).then((res) => {
+          resolve(res)
+        }).catch((err) => {
+          reject(err)
+        })
+      })
+    }
+  },
+  created () {
+    let _this = this
+    // 初始化推荐列表
+    this.recommendInit().then((res) => {
+      _this.commonArr = res.data.datacj
+      _this.hotArr = res.data.datarm
+      console.log(_this.hotArr)
+    })
+    // 如果不是从登录页面跳转进来，初始化组件的时候就能拿到公共状态
+    // 如果从登录页面进来，则需要watch ifLogin状态的异步操作
+    // 初始化收藏列表
+    if (this.ifLogin) {
+      this.collectionListInit(1).then((res) => {
+        console.log(res)
+      })
     }
   }
 }

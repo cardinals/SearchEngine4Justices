@@ -36,3 +36,13 @@ export const logout = () => get(`${baseUrl}/user/logout`, {})
 export const tipsCN = (params) => get(`${baseUrl}/suggest/hanZi`, params)
 // 英文提示
 export const tipsEN = (params) => get(`${baseUrl}/suggest/pinYin`, params)
+// 推荐列表
+export const recommend = () => get(`${baseUrl}/user/recommend`, {})
+// 收藏列表
+export const collectionList = (params) => get(`${baseUrl}/user/collectionList`, params)
+// (取消)收藏
+export const collection = (params) => post(`${baseUrl}/user/collection`, params)
+// 案件详情
+export const mediateCaseDetail = (params) => get(`${baseUrl}/detail/mediateCase`, params)
+// 调解员详情
+export const referee = (params) => get(`${baseUrl}/detail/referee`, params)
