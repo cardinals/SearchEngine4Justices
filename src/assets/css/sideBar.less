@@ -1,0 +1,74 @@
+@height:46px;
+.sideBar{
+  width: 100%;
+  height: @height;
+  overflow: hidden;
+  transition: 0.5s linear;
+  background: white;
+  margin-bottom: 5px;
+  .title{
+    display: block;
+    height: @height;
+    overflow: hidden;
+    padding: 0 8px;
+    .main{
+      font-size: 18px;
+      line-height: @height;
+      float: left;
+    }
+    .show_c{
+      float: right;
+      cursor: pointer;
+      color: rgba(0,0,0,0.65);
+      &:hover{
+        color:#4653fe;
+      }
+      .show{
+        font-size: 14px;
+        line-height: @height;
+        float: right;
+        padding-right: 6px;
+      }
+      .icons{
+        line-height: @height;
+        float: right;
+      }
+    }
+  }
+  .ul{
+    display: block;
+    border-top: 1px solid rgba(233,233,233,1);
+    .li{
+      font-size: 14px;
+      line-height: 20px;
+      margin:8px 0;
+      overflow: hidden;
+      transition:height 0.5s linear;
+      position: relative;
+      padding:0 8px 0 30px;
+      &:hover{
+        .name{
+          color:#4967FE;
+        }
+        background:rgba(73,103,254,0.2);
+      }
+      .name{
+        cursor: pointer;
+      }
+      .content{
+        display: block;
+        overflow: hidden;
+        padding: 8px 0;
+      }
+      .point{
+        position: absolute;
+        width:5px;
+        height:5px;
+        background:rgba(139,139,139,1);
+        border-radius:50%;
+        left: 16px;
+        top: 7px;
+      }
+    }
+  }
+}
