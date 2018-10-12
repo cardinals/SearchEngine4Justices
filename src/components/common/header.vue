@@ -6,13 +6,13 @@
  */
 
 <template>
-  <div class="header" v-if="$route.fullPath!=='/login'">
-    <div class="main">
-      <div class="logo_c clearfix">
+  <div class="header" :style="{'margin-bottom':$route.fullPath ==='/home'?'0':'23px'}">
+    <div class="main" >
+      <div @click="$router.push('/home')" v-if="$route.fullPath!=='/home'" class="logo_c clearfix">
         <i class="logo"></i>
         <span class="title">同案同调</span>
       </div>
-      <div class="search_c">
+      <div  v-if="$route.fullPath!=='/home'" class="search_c">
         <div class="select_c">
            <el-select v-model="value" placeholder="请选择">
             <el-option
@@ -25,13 +25,18 @@
         </div>
         <div class="border"></div>
         <div class="search">
-          <!-- <el-autocomplete
+          <el-autocomplete
             class="inline-input"
-            v-model="searchVal"
+            v-model="search"
             :fetch-suggestions="querySearch"
-            placeholder="请输入内容"
+            placeholder="请输入关键词或案件详情"
             @select="handleSelect"
-          ></el-autocomplete> -->
+            :trigger-on-focus="false"
+          >
+          <template slot-scope="props">
+            <div class="name">{{ props.item.text }}</div>
+          </template>
+          </el-autocomplete>
         </div>
         <div class="search_btn">
           <i class="el-icon-search"></i>
@@ -40,12 +45,13 @@
       <div class="menu_c">
         <div class="icon"></div>
         <div class="menu clearfix">
-          <el-dropdown  trigger="click">
+          <el-dropdown @command="goLogin" trigger="click">
             <span class="el-dropdown-link">
-              林峰<i class="el-icon-arrow-down el-icon--right"></i>
+              {{ifLogin?'已登录':'未登录'}}
+              <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>注销</el-dropdown-item>
+              <el-dropdown-item :command='ifLogin'>{{ifLogin?'注销':'登录'}}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -55,12 +61,13 @@
 </template>
 
 <script>
-// import { loginStatus } from '@/api/api.js'
+import { mapState, mapActions } from 'vuex'
+import { tipsCN, tipsEN } from '@/api/api.js'
+import {Message} from 'element-ui'
 export default {
   components: {},
   data () {
     return {
-      ifLogin: false,
       options: [{
         value: '01',
         label: '调解案例'
@@ -75,22 +82,71 @@ export default {
         label: '法律条文'
       }],
       value: '01',
-      searchVal: ''
+      search: ''
     }
   },
   computed: {
-
+    ...mapState('header', {
+      ifLogin: state => state.ifLogin
+    })
   },
   methods: {
-
+    ...mapActions({
+      changeLoginAsync: 'header/changeLoginAsync',
+      logoutAsync: 'header/logoutAsync'
+    }),
+    // 注销或登录按钮
+    goLogin (command) {
+      let _this = this
+      if (command) {
+        _this.logoutAsync().then((res) => {
+          if (res.code === 1) {
+            Message({
+              message: res.message,
+              type: 'success'
+            })
+            _this.$router.push('/login')
+          } else {
+            Message({
+              message: res.message,
+              type: 'warning'
+            })
+          }
+        })
+      } else {
+        _this.$router.push('/login')
+      }
+    },
+    // 获取汉字
+    ifCN (v) {
+      if (v === '' || (/^\s*$/gi).test(v)) return ''
+      let res = v.match(/[\u4e00-\u9fa5]*/g)
+      if (res) {
+        return res.join('')
+      } else return false
+    },
+    // 选择下拉列表搜索条件
+    handleSelect (select) {
+      console.log(select)
+      this.search = select.text
+    },
+    // 搜索提示
+    querySearch (queryString, callback) {
+      console.log(this.ifCN(queryString))
+      let CN = this.ifCN(queryString)
+      if (CN) {
+        tipsCN({'prefix': CN}).then((res) => {
+          callback(res.data)
+        })
+      } else {
+        tipsEN({'prefix': queryString}).then((res) => {
+          callback(res.data)
+        })
+      }
+    }
   },
-  created () {
-    // let _this = this
-    // loginStatus().then((res) => {
-    //   if (res.code === 1) {
-    //     _this.ifLogin = true
-    //   }
-    // })
+  mounted () {
+    this.changeLoginAsync()
   }
 }
 </script>
