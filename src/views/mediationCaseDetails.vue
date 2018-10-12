@@ -46,7 +46,9 @@
            <i class="border"></i>
         </div>
         <div class="content">
-          <div class="stage">{{item.value}}</div>
+          <div class="stage" v-for="(item,index) in $options.filters.changeEnter(item.value)" :key="index">
+            <p>{{item}}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -81,6 +83,7 @@
 
 <script>
 import { mediateCaseDetail, referee } from '@/api/api.js'
+import { Message } from 'element-ui'
 export default {
   data () {
     return {
@@ -128,6 +131,10 @@ export default {
   filters: {
     changeNull (val) {
       return !val ? '暂无信息' : val
+    },
+    // 解析\n
+    changeEnter (val) {
+      return val.split('\\n')
     }
   },
   methods: {
@@ -139,6 +146,11 @@ export default {
           _this.left = ev.layerX + 15 + 'px'
           _this.top = ev.layerY + 5 + 'px'
           _this.showPeopleDetail = true
+        } else {
+          Message({
+            message: res.message,
+            type: 'warning'
+          })
         }
       })
     }
@@ -150,20 +162,26 @@ export default {
       _this.showPeopleDetail = false
     })
     // 获取案件
-    mediateCaseDetail({'id': 'A1305'}).then((res) => {
+    mediateCaseDetail({'id': _this.$route.params.id}).then((res) => {
       // 解构赋值
-      let {title, system, smallClass, keyword, transactDate, refereeDept, refereed, collectFlag, content, dissensionId} = res.data
-
-      // 处理下keyword
-      keyword = keyword.split('|')
-      _this.caseDetail = {title, system, smallClass, keyword, transactDate, refereeDept, refereed, dissensionId}
-      _this.collectFlag = collectFlag
-      _this.content = content
-      // 处理下目录
-      _this.catalog = content.map((item) => {
-        return item.name
-      })
-      _this.catalog.unshift('基本信息')
+      if (res.code === 1) {
+        let {title, system, smallClass, keyword, transactDate, refereeDept, refereed, collectFlag, content, dissensionId} = res.data
+        // 处理下keyword
+        keyword = keyword.split('|')
+        _this.caseDetail = {title, system, smallClass, keyword, transactDate, refereeDept, refereed, dissensionId}
+        _this.collectFlag = collectFlag
+        _this.content = content
+        // 处理下目录
+        _this.catalog = content.map((item) => {
+          return item.name
+        })
+        _this.catalog.unshift('基本信息')
+      } else {
+        Message({
+          message: res.message,
+          type: 'warning'
+        })
+      }
     })
   }
 }

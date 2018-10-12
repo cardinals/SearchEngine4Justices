@@ -96,7 +96,7 @@
     .list-li{
       height:46px;
       font-size: 14px;
-      width: 113px;
+      min-width: 113px;
       cursor: pointer;
       margin-left: 16px;
       position: relative;
@@ -172,6 +172,9 @@
         height: 46px;
         color:#474747;
         line-height: 46px;
+        display: inline-block;
+        white-space: nowrap;
+        padding-right: 12px;
       }
       &::after{
         content: '';

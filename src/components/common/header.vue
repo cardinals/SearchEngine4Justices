@@ -8,7 +8,7 @@
 <template>
   <div class="header" :style="{'margin-bottom':$route.fullPath ==='/home'?'0':'23px'}">
     <div class="main" >
-      <div v-if="$route.fullPath!=='/home'" class="logo_c clearfix">
+      <div @click="$router.push('/home')" v-if="$route.fullPath!=='/home'" class="logo_c clearfix">
         <i class="logo"></i>
         <span class="title">同案同调</span>
       </div>

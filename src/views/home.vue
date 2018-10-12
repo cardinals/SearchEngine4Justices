@@ -77,7 +77,7 @@
             <div class="ul">
               <div class="li" v-for="(item,index) in hotArr" :key="index">
                 <span class="sort">{{index+1}}</span>
-                <span class="content">{{item.title}}</span>
+                <span @click="$router.push('/mediationCaseDetails/' + item.ajid)" class="content">{{item.title}}</span>
                 <i class="new" v-if="index<=2"></i>
               </div>
             </div>
@@ -90,45 +90,18 @@
             <div class="ul">
               <div class="li" v-for="(item,index) in commonArr" :key="index">
                 <span class="sort">{{index+1}}</span>
-                <span class="content">{{item.title}}</span>
+                <span class="content" @click="$router.push('/mediationCaseDetails/' + item.ajid)">{{item.title}}</span>
               </div>
             </div>
           </div>
         </div>
         <div class="collection" v-show="showWhich==='collection'">
           <div class="ul">
-            <div class="li">
-              <div class="types"><span>案例</span><i class="circle"></i></div>
-              <div class="content">老年人的赡养纠纷,老人该何去何从老人该何去何从老人该何去何从</div>
+            <div class="li" v-for="item in collectionArr" :key="item.ajid">
+              <div class="types"><span>{{item.detailType|changeType}}</span><i class="circle"></i></div>
+              <div class="content" @click="goDetail(item.detailType,item.ajid)">{{item.title}}</div>
               <div class="new"></div>
-              <div class="btn">取消收藏</div>
-            </div>
-            <div class="li">
-              <div class="types"><span>案例</span><i class="circle"></i></div>
-              <div class="content">老年人的赡养纠纷,老人该何去何从</div>
-              <div class="new"></div>
-              <div class="btn">取消收藏</div>
-            </div>
-            <div class="li">
-              <div class="types"><span>案例</span><i class="circle"></i></div>
-              <div class="content">老年人的赡养纠纷,老人该何去何从</div>
-              <div class="new"></div>
-              <div class="btn">取消收藏</div>
-            </div>
-            <div class="li">
-              <div class="types"><span>案例</span><i class="circle"></i></div>
-              <div class="content">老年人的赡养纠纷,老人该何去何从</div>
-              <div class="btn">取消收藏</div>
-            </div>
-            <div class="li">
-              <div class="types"><span>案例</span><i class="circle"></i></div>
-              <div class="content">老年人的赡养纠纷,老人该何去何从</div>
-              <div class="btn">取消收藏</div>
-            </div>
-            <div class="li">
-              <div class="types"><span>案例</span><i class="circle"></i></div>
-              <div class="content">老年人的赡养纠纷,老人该何去何从</div>
-              <div class="btn">取消收藏</div>
+              <div class="btn" @click="unCollection($event,item)">取消收藏</div>
             </div>
           </div>
         </div>
@@ -139,7 +112,8 @@
 
 <script>
 import {mapState} from 'vuex'
-import { tipsCN, tipsEN, recommend, collectionList } from '@/api/api.js'
+import { tipsCN, tipsEN, recommend, collectionList, collection } from '@/api/api.js'
+import { Message } from 'element-ui'
 export default {
   name: 'home',
   data () {
@@ -155,6 +129,14 @@ export default {
     ...mapState('header', {
       ifLogin: state => state.ifLogin
     })
+  },
+  filters: {
+    // 映射关系
+    changeType (val) {
+      let arr1 = ['mediateCase', 'protocol', 'law', 'judgement']
+      let arr2 = ['案例', '协议', '法条', '文书']
+      return arr2[arr1.indexOf(val)]
+    }
   },
   watch: {
     // 监控一下header的是否登录状态,注意这里不要用箭头函数导致this指向有问题
@@ -213,22 +195,70 @@ export default {
           reject(err)
         })
       })
+    },
+    // 取消收藏
+    unCollection (ev, params) {
+      collection({
+        'id': params.ajid,
+        'detailType': params.detailType,
+        'subtype': params.subtype,
+        'title': params.title
+      }).then((res) => {
+        if (res.code === 6) {
+          // 隐藏节点，防止刷新页面
+          ev.target.parentElement.style.display = 'none'
+          Message({
+            message: res.message,
+            type: 'success'
+          })
+        } else {
+          Message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      })
+    },
+    // 收藏跳转
+    goDetail (type, id) {
+      if (type === 'mediateCase') {
+        this.$router.push('/mediationCaseDetails/' + id)
+      } else if (type === 'protocol') {
+        this.$router.push('/mediationAgreementDetail/' + id)
+      } else if (type === 'judgement') {
+        this.$router.push('/judgmentDocumentDetail/' + id)
+      } else if (type === 'law') {
+        this.$router.push('/lawsDetail/' + id)
+      }
     }
   },
   created () {
     let _this = this
     // 初始化推荐列表
     this.recommendInit().then((res) => {
-      _this.commonArr = res.data.datacj
-      _this.hotArr = res.data.datarm
-      console.log(_this.hotArr)
+      if (res.code === 1) {
+        _this.commonArr = res.data.datacj
+        _this.hotArr = res.data.datarm
+      } else {
+        Message({
+          message: res.message,
+          type: 'warning'
+        })
+      }
     })
     // 如果不是从登录页面跳转进来，初始化组件的时候就能拿到公共状态
     // 如果从登录页面进来，则需要watch ifLogin状态的异步操作
     // 初始化收藏列表
     if (this.ifLogin) {
       this.collectionListInit(1).then((res) => {
-        console.log(res)
+        if (res.code === 1) {
+          _this.collectionArr = res.data.pageData
+        } else {
+          Message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
       })
     }
   }

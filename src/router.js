@@ -41,25 +41,25 @@ export default new Router({
     },
     // 调解协议书详情页
     {
-      path: '/MediationAgreementDetail',
+      path: '/MediationAgreementDetail/:id',
       name: '调解协议书详情',
       component: () => import('./views/mediationAgreementDetail.vue')
     },
     // 裁判文书详情页
     {
-      path: '/judgmentDocumentDetail',
+      path: '/judgmentDocumentDetail/:id',
       name: '裁判文书详情',
       component: () => import('./views/judgmentDocumentDetail.vue')
     },
     // 调解案件详情页
     {
-      path: '/mediationCaseDetails',
+      path: '/mediationCaseDetails/:id',
       name: '调解案件详情',
       component: () => import('./views/mediationCaseDetails.vue')
     },
     // 法律法规详情页
     {
-      path: '/lawsDetail',
+      path: '/lawsDetail/:id',
       name: '法律法规详情',
       component: () => import('./views/lawsDetail.vue')
     },

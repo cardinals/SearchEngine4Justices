@@ -27,7 +27,7 @@ export default {
   data () {
     return {
       showList: false,
-      showWhich: '基本信息',
+      showWhich: '',
       flag: 0
     }
   },
@@ -39,7 +39,8 @@ export default {
   methods: {
     // 锚点跳转
     goAnchor (selector) {
-      let anchor = document.querySelector('#' + selector)
+      // 查询id 去掉空格
+      let anchor = document.querySelector('#' + selector.replace(/\s/g, ''))
       // 交互
       this.showWhich = selector
       let index = 1
