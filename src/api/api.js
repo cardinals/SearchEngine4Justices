@@ -29,4 +29,26 @@ export const register = (params) => post(`${baseUrl}/user/register`, params)
 // 首次登录用户推荐
 export const focusType = (params) => post(`${baseUrl}/user/focusType`, params)
 // 验证是否登录
-export const loginStatus = (params) => get(`${baseUrl}/user/loginStatus`, {})
+export const loginStatus = () => get(`${baseUrl}/user/loginStatus`, {})
+// 注销接口
+export const logout = () => get(`${baseUrl}/user/logout`, {})
+// 中文提示
+export const tipsCN = (params) => get(`${baseUrl}/suggest/hanZi`, params)
+// 英文提示
+export const tipsEN = (params) => get(`${baseUrl}/suggest/pinYin`, params)
+// 推荐列表
+export const recommend = () => get(`${baseUrl}/user/recommend`, {})
+// 收藏列表
+export const collectionList = (params) => get(`${baseUrl}/user/collectionList`, params)
+// (取消)收藏
+export const collection = (params) => post(`${baseUrl}/user/collection`, params)
+// 案件详情
+export const mediateCaseDetail = (params) => get(`${baseUrl}/detail/mediateCase`, params)
+// 调解员详情
+export const referee = (params) => get(`${baseUrl}/detail/referee`, params)
+// 调解协议详情
+export const protocol = (params) => get(`${baseUrl}/detail/protocol`, params)
+// 裁判文书详情
+export const judgement = (params) => get(`${baseUrl}/detail/judgement`, params)
+// 法律条文详情
+export const law = (params) => get(`${baseUrl}/detail/law`, params)

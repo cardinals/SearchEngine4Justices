@@ -5,38 +5,42 @@
         <i class="icon"></i>
         <span class="span">目录</span>
       </div>
-      <div class="box2">
+      <div @click="collectionfn" class="box2" :class="{'active':flag!==0}">
         <i class="icon"></i>
         <span class="span">收藏</span>
       </div>
     </div>
     <div class="list-ul" v-show="showList">
-      <div v-for="item in arr" :key = item.id @click="goAnchor(item.id)" class="list-li" :class="{'active':item.id === showWhich}">
+      <div v-for="item in catalog" :key = item.id @click="goAnchor(item)" class="list-li" :class="{'active':item === showWhich}">
         <i class="circle"></i>
-        <span>{{item.name}}</span>
+        <span>{{item}}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { collection } from '@/api/api.js'
+import { Message } from 'element-ui'
 export default {
+  props: ['catalog', 'ids', 'subtype', 'title', 'detailType', 'collectFlag'],
   data () {
     return {
-      showList: true,
-      showWhich: '#jibenxinxi',
-      arr: [
-        {id: '#jibenxinxi', name: '基本信息'},
-        {id: '#anjianxiangqing', name: '案件详情'},
-        {id: '#tiaojiejinguo', name: '调解经过'},
-        {id: '#tiaojiejieguo', name: '案件详情'},
-        {id: '#tiaojiexinde', name: '调节心得'}
-      ]
+      showList: false,
+      showWhich: '',
+      flag: 0
+    }
+  },
+  watch: {
+    collectFlag: function (to, from) {
+      this.flag = to
     }
   },
   methods: {
+    // 锚点跳转
     goAnchor (selector) {
-      let anchor = document.querySelector(selector)
+      // 查询id 去掉空格
+      let anchor = document.querySelector('#' + selector.replace(/\s/g, ''))
       // 交互
       this.showWhich = selector
       let index = 1
@@ -48,6 +52,35 @@ export default {
         index++
         if (index === 21) { clearInterval(timer) }
       }, 10)
+    },
+    // 收藏
+    collectionfn () {
+      let _this = this
+      collection({
+        'id': _this.ids,
+        'subtype': _this.subtype,
+        'title': _this.title,
+        'detailType': _this.detailType
+      }).then((res) => {
+        if (res.code === 1) {
+          _this.flag = 1
+          Message({
+            message: res.message,
+            type: 'success'
+          })
+        } else if (res.code === 6) {
+          _this.flag = 0
+          Message({
+            message: res.message,
+            type: 'success'
+          })
+        } else {
+          Message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      })
     }
   },
   mounted () {
@@ -64,7 +97,6 @@ export default {
     //   })
     //   _this.showWhich = _this.arr[which].id
     // })
-
     // body监听一下点击事件
     window.addEventListener('click', function () {
       _this.showList = false

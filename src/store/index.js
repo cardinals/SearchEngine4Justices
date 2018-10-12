@@ -8,12 +8,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import app from './modules/app'
+import header from './modules/header'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    app
+    app,
+    header
   },
   strict: process.env.NODE_ENV !== 'production'
 })

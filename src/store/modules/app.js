@@ -12,6 +12,16 @@ const state = {
   token: ''
 }
 
+// mutations
+const mutations = {
+  changeLoadingStatus (state, status) {
+    state.isShowLoading = status
+  },
+  setToken (state, status) {
+    state.token = status
+  }
+}
+
 // actions
 const actions = {
   // 切换遮罩加载状态
@@ -29,16 +39,6 @@ const actions = {
     commit('setToken', obj.amount)
     // 将token写入本地存储
     window.localStorage.removeItem('token')
-  }
-}
-
-// mutations
-const mutations = {
-  changeLoadingStatus (state, status) {
-    state.isShowLoading = status
-  },
-  setToken (state, status) {
-    state.token = status
   }
 }
 
