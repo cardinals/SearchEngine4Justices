@@ -7,7 +7,7 @@
       </div>
       <div @click="collectionfn" class="box2" :class="{'active':flag!==0}">
         <i class="icon"></i>
-        <span class="span">收藏</span>
+        <span class="span" v-text="flag!==0?'已收藏':'收藏'"></span>
       </div>
     </div>
     <div class="list-ul" v-show="showList">

@@ -52,3 +52,5 @@ export const protocol = (params) => get(`${baseUrl}/detail/protocol`, params)
 export const judgement = (params) => get(`${baseUrl}/detail/judgement`, params)
 // 法律条文详情
 export const law = (params) => get(`${baseUrl}/detail/law`, params)
+// 推荐各种接口
+export const recommendList = (params) => get(`${baseUrl}/mediate/recommendList`, params)

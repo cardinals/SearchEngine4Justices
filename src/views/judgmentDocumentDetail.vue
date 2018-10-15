@@ -50,32 +50,22 @@
         </div>
       </div>
     </div>
+    <!-- 侧边栏组件 -->
     <div class="sideContainer">
-      <side-bar title="裁判文书质量" :data="data"></side-bar>
-      <side-bar title="法律条文" :data="data" model="details"></side-bar>
+      <side-bar url='judgmentDocumentDetail' title="类案裁判文书" :data="judgement"></side-bar>
+      <side-bar url='mediationAgreementDetail' title="类案调解协议" :data="protocol"></side-bar>
+      <side-bar url='mediationCaseDetails' title="其他相似案例" :data="mediateCase"></side-bar>
+      <side-bar url='' title="使用法条推荐" :data="law" model="details"></side-bar>
     </div>
   </div>
 </template>
 
 <script>
-import { judgement } from '@/api/api.js'
+import { judgement, recommendList } from '@/api/api.js'
 import { Message } from 'element-ui'
 export default {
   data () {
     return {
-      data: [{
-        name: '这是一段话',
-        value: 'id1',
-        content: '这是一段话详情这是一段话详情这是一段话详情这是一段话详情这是一段话详情'
-      }, {
-        name: '这是一段话这是一段话这是一段话这是一段话这是一段话这是一段话这是一段话这是一段话',
-        value: 'id2',
-        content: '这是一段话详情这是一段话详情这是一段话详情这是一段话详情这是一段话详情'
-      }, {
-        name: '这是一段话这是一段话这是一段话这是一段话这是一段话这是一段话这是一段话这是一段话这是一段话这是一段话这是一段话这是一段话',
-        value: 'id3',
-        content: '这是一段话详情这是一段话详情这是一段话详情这是一段话详情这是一段话详情'
-      }],
       judgementDetail: {
         title: '',
         system: '',
@@ -88,7 +78,11 @@ export default {
       },
       content: [],
       collectFlag: 0,
-      catalog: []
+      catalog: [],
+      judgement: [],
+      law: [],
+      mediateCase: [],
+      protocol: []
     }
   },
   filters: {
@@ -102,6 +96,7 @@ export default {
   },
   mounted () {
     let _this = this
+    // 获取详情
     judgement({'id': _this.$route.params.id}).then((res) => {
       // 解构赋值
       if (res.code === 1) {
@@ -119,6 +114,49 @@ export default {
       } else {
         Message({
           message: res.message,
+          type: 'warning'
+        })
+      }
+    })
+    // 获取推荐
+    recommendList({
+      id: _this.$route.params.id,
+      detailType: 'mediateCase'
+    }).then((res) => {
+      if (res.code === 1) {
+        let data = res.data
+        // 处理一下数据成为组件标准格式
+        _this.judgement = data.judgement.map((item) => {
+          return {
+            'name': item.title,
+            'value': item.caseId,
+            'content': ''
+          }
+        })
+        _this.law = data.law.map((item) => {
+          return {
+            'name': item.lawItem,
+            'value': item.number,
+            'content': item.content
+          }
+        })
+        _this.mediateCase = data.mediateCase.map((item) => {
+          return {
+            'name': item.title,
+            'value': item.dissensionId,
+            'content': item.mediateCircs
+          }
+        })
+        _this.protocol = data.protocol.map((item) => {
+          return {
+            'name': item.title,
+            'value': item.protocolId,
+            'content': item.dealdispute
+          }
+        })
+      } else {
+        Message({
+          message: '获取推荐列表失败',
           type: 'warning'
         })
       }
