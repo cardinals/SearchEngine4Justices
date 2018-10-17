@@ -2,19 +2,23 @@
   <div class="searchList">
     <div class="searchCondition clearfix">
       <div class="label">搜索条件:</div>
-      <div class="buttons">
-        <span class="span">婚姻</span>
-        <span class="iconx">×</span>
-      </div>
-      <div class="reset">重置条件</div>
+      <transition-group name="rotate">
+        <div class="buttons" v-for="(item,index) in keywordArr" :key="index">
+          <span class="span">{{item.val}}</span>
+          <span class="iconx" @click="deleteKeyword(item)">×</span>
+        </div>
+      </transition-group>
+      <div class="reset" v-if="keywordArr.length!==0">重置条件</div>
     </div>
-    <div class="searchCondition">
+    <!-- 相关搜索暂时不要 -->
+    <div v-if="false" class="searchCondition">
       <div class="label">相关搜索:</div>
       <div class="span2">婚姻家庭</div>
       <div class="span2">公积金住房</div>
       <div class="span2">住房赡养</div>
     </div>
     <div class="treeList clearfix">
+      <!-- 案件分类 和 关键词 -->
       <div class="tree">
         <div class="classify">
           <div class="titles">
@@ -27,6 +31,7 @@
            :props="defaultProps"
            @node-click="handleNodeClick"
            highlight-current
+           :expand-on-click-node="false"
           ></el-tree>
         </div>
         <div class="keyword">
@@ -35,108 +40,148 @@
             <span>关键词</span>
           </div>
           <div class="main">
-            <div class="once">
-              <i class="el-icon-caret-right"></i>
-              <span class="">关键词1</span>
-            </div>
-            <div class="once">
-              <i class="el-icon-caret-right"></i>
-              <span class="">关键词2</span>
+            <div @click="addKeyword(item)" class="once" v-for="(item,index) in keywordAggs" :key="index">
+              <i class="circle"></i>
+              <span class="">{{item.name + '(' + item.value + ')'}}</span>
             </div>
           </div>
         </div>
       </div>
+      <!-- 右边列表 -->
       <div class="list">
         <div class="others">
           <div class="label">排序:</div>
-          <div class="sort active">
-            <span>按相关度</span>
+          <div class="sort" :class="{'active':sortFlag==='score'}">
+            <span @click="sortFlag='score'">按相关度</span>
             <i class="el-icon-download"></i>
           </div>
-          <div class="sort">
-            <span>按时间</span>
+          <div class="sort" :class="{'active':sortFlag==='date'}">
+            <span @click="sortFlag='date'">按时间</span>
             <i class="el-icon-download"></i>
           </div>
           <div class="echarts">
             <div class="img"></div>
             <span>类案分析</span>
           </div>
-          <div class="num">共130篇</div>
+          <div class="num">共{{pageTotal}}篇</div>
         </div>
-        <div class="once">
+        <div class="once" v-for="(item,index) in renderList" :key="index">
           <div class="main">
             <div class="titles">
-              <span>夫妻之间严重缺乏信任，住房意见不同起婚姻纠纷</span>
+              <span @click="openUrl('mediationCaseDetails',item.dissensionId)" v-if="searchType==='mediateCase'" v-html="keywords(item.title)"></span>
+              <span @click="openUrl('mediationAgreementDetail',item.protocolId)" v-if="searchType==='protocol'" v-html="keywords(item.title)"></span>
+              <span @click="openUrl('judgmentDocumentDetail',item.caseId)" v-if="searchType==='judgement'" v-html="keywords(item.title)"></span>
+              <span @click="openUrl('lawsDetail',item.number)" v-if="searchType==='law'" abc="law" v-html="keywords(item.lawItem)"></span>
             </div>
             <div class="infos clearfix">
-              <span class="span">婚姻家庭纠纷</span>
+              <span class="span">{{item.class}}</span>
               <i class="border"></i>
-              <span class="span">杨浦区五角场街道调委会</span>
+              <span v-if="searchType==='mediateCase'" class="span">{{item.refereeDept|changeNull}}</span>
+              <span v-if="searchType==='protocol'" class="span">{{item.refereeDept|changeNull}}</span>
+              <span v-if="searchType==='judgement'" class="span">{{item.courtName|changeNull}}</span>
+              <span v-if="searchType==='law'" class="span">{{item.publisher|changeNull}}</span>
               <i class="border"></i>
-              <span class="span">2018-3-21</span>
+              <span v-if="searchType==='mediateCase'" class="span">{{item.transactDate|changeNull}}</span>
+              <span v-if="searchType==='protocol'" class="span">{{item.dateaccepted|changeNull}}</span>
+              <span v-if="searchType==='judgement'" class="span">{{item.trialDate|changeNull}}</span>
+              <span v-if="searchType==='law'" class="span">{{item.enforceDate|changeNull}}</span>
             </div>
-            <div class="details">
+            <div class="details" v-if="searchType==='mediateCase'">
               <div class="line1">【案件详情】</div>
-              <div class="line2">本案中，调委会调动医患双方选择快捷的专家评鉴形式，引导双方依据专家的评鉴意见理清责任，快速解决医患纠纷，既维护了患者的合理诉求，又维护了院方的合法权益，为医患双方带来和谐，彰显人民调解的巨大作用。</div>
+              <div class="line2" v-html="keywords(item.mediateCircs)"></div>
             </div>
-            <div class="types">调解案例</div>
+            <div class="details" v-if="searchType==='protocol'">
+              <div class="line1">【简要情况】</div>
+              <div class="line2" v-html="keywords(item.dealdispute)"></div>
+            </div>
+            <div class="details" v-if="searchType==='judgement'">
+              <div class="line1">【判决理由】</div>
+              <div class="line2" v-html="keywords(item.caseContent)"></div>
+            </div>
+            <div class="details" v-if="searchType==='law'">
+              <div class="line2" v-html="keywords(item.content)"></div>
+            </div>
+            <div class="types" v-if="searchType==='mediateCase'">调解案例</div>
+            <div class="types" v-if="searchType==='protocol'">调解协议书</div>
+            <div class="types" v-if="searchType==='judgement'">裁判文书</div>
           </div>
-          <div class="otherInfo">
-            <div class="buttons" @click="showDom($event,'法条')" :class="{'active':state==='法条'}">适用法条推荐</div>
-            <div class="buttons" @click="showDom($event,'文书')" :class="{'active':state==='文书'}">类案裁判文书</div>
-            <div class="buttons" @click="showDom($event,'类案')" :class="{'active':state==='类案'}">类案调解协议</div>
+          <!-- 案件详情适配 -->
+          <div class="otherInfo clearfix" v-if="searchType==='mediateCase'">
+            <div class="buttons" @click="showDom($event,'law',item.dissensionId)" :class="{'active':state==='law'&& dissensionId === item.dissensionId}">适用法条推荐</div>
+            <div class="buttons" @click="showDom($event,'judgement',item.dissensionId)" :class="{'active':state==='judgement'&& dissensionId === item.dissensionId}">类案裁判文书</div>
+            <div class="buttons" @click="showDom($event,'protocol',item.dissensionId)" :class="{'active':state==='protocol'&& dissensionId === item.dissensionId}">类案调解协议</div>
           </div>
-          <div class="hide_c">
-            <div class="hideBlock" :class="{'delt1':state==='法条','delt2':state==='文书','delt3':state==='类案','active':state}">
-              <div class="once_h">
-                <div class="title1">《最高人民法院关于人民法院审理未办结婚登记而以夫妻名义同居生活案件的若干意见》第四条</div>
+          <div v-if="searchType==='mediateCase'" class="hide_c">
+            <div class="hideBlock" :class="{'delt1':state==='law'&& dissensionId === item.dissensionId,'delt2':state==='judgement'&& dissensionId === item.dissensionId,'delt3':state==='protocol'&& dissensionId === item.dissensionId,'active':state}">
+              <!-- 法条 -->
+              <div v-show="state==='law'" v-for="(item,index) in law" :key="index" class="once_h">
+                <div class="title1">{{item.lawItem}}</div>
+                <div class="contents" v-html="keywords(item.content)"></div>
+              </div>
+              <!-- 裁判文书 -->
+              <div v-show="state==='judgement'" v-for="item in judgement" :key="item.caseId" class="once_h">
+                <div class="title1">{{item.title}}</div>
+                <div class="title2">【判决理由】</div>
+                <div class="contents" v-html="keywords(item.trialReason)"></div>
+              </div>
+              <!-- 类案协议 -->
+              <div v-show="state==='protocol'" v-for="item in protocol" :key="item.protocolId" class="once_h">
+                <div class="title1">{{item.title}}</div>
                 <div class="title2">【案件详情】</div>
-                <div class="contents">任何组织和个人不得以妇女未婚、结婚、离婚、丧偶等为由，侵害妇女在农村集体经济组织中的各项权益因结婚男方到女方住所落户到，男方和子女享有与所在地农村集体经济组织成员平等的权益</div>
-              </div>
-              <div class="once_h">
-                <div class="title1">《最高人民法院关于人民法院审理未办结婚登记而以夫妻名义同居生活案件的若干意见》第四条</div>
-                <div class="title2" v-if="false">【案件详情】</div>
-                <div class="contents">任何组织和个人不得以妇女未婚、结婚、离婚、丧偶等为由，侵害妇女在农村集体经济组织中的各项权益因结婚男方到女方住所落户到，男方和子女享有与所在地农村集体经济组织成员平等的权益</div>
+                <div class="contents" v-html="keywords(item.dealdispute)"></div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="once">
-          <div class="main">
-            <div class="titles">
-              <span>夫妻之间严重缺乏信任，住房意见不同起婚姻纠纷</span>
-            </div>
-            <div class="infos clearfix">
-              <span class="span">婚姻家庭纠纷</span>
-              <i class="border"></i>
-              <span class="span">杨浦区五角场街道调委会</span>
-              <i class="border"></i>
-              <span class="span">2018-3-21</span>
-            </div>
-            <div class="details">
-              <div class="line1">【案件详情】</div>
-              <div class="line2">本案中，调委会调动医患双方选择快捷的专家评鉴形式，引导双方依据专家的评鉴意见理清责任，快速解决医患纠纷，既维护了患者的合理诉求，又维护了院方的合法权益，为医患双方带来和谐，彰显人民调解的巨大作用。</div>
-            </div>
-            <div class="types">调解案例</div>
+          <!-- 调解协议适配 -->
+          <div class="otherInfo clearfix"  v-if="searchType==='protocol'">
+            <div class="buttons" @click="showDom($event,'law',item.protocolId)" :class="{'active':state==='law'&& dissensionId === item.protocolId}">适用法条推荐</div>
+            <div class="buttons" @click="showDom($event,'judgement',item.protocolId)" :class="{'active':state==='judgement'&& dissensionId === item.protocolId}">类案裁判文书</div>
+            <div class="buttons" @click="showDom($event,'mediateCase',item.protocolId)" :class="{'active':state==='mediateCase'&& dissensionId === item.protocolId}">相似调解案例</div>
           </div>
-          <div class="otherInfo">
-            <div class="buttons" @click="showDom($event,'法条')" :class="{'active':state==='法条'}">适用法条推荐</div>
-            <div class="buttons" @click="showDom($event,'文书')" :class="{'active':state==='文书'}">类案裁判文书</div>
-            <div class="buttons" @click="showDom($event,'类案')" :class="{'active':state==='类案'}">类案调解协议</div>
-          </div>
-          <div class="hide_c">
-            <div class="hideBlock" :class="{'delt1':state==='法条','delt2':state==='文书','delt3':state==='类案','active':state}">
-              <div class="once_h">
-                <div class="title1">《最高人民法院关于人民法院审理未办结婚登记而以夫妻名义同居生活案件的若干意见》第四条</div>
+          <div v-if="searchType==='protocol'" class="hide_c">
+            <div class="hideBlock" :class="{'delt1':state==='law'&& dissensionId === item.protocolId,'delt2':state==='judgement'&& dissensionId === item.protocolId,'delt3':state==='mediateCase'&& dissensionId === item.protocolId,'active':state}">
+              <!-- 法条 -->
+              <div v-show="state==='law'" v-for="(item,index) in law" :key="index" class="once_h">
+                <div class="title1">{{item.lawItem}}</div>
+                <div class="contents" v-html="keywords(item.content)"></div>
+              </div>
+              <!-- 裁判文书 -->
+              <div v-show="state==='judgement'" v-for="item in judgement" :key="item.caseId" class="once_h">
+                <div class="title1">{{item.title}}</div>
+                <div class="title2">【判决理由】</div>
+                <div class="contents" v-html="keywords(item.trialReason)"></div>
+              </div>
+              <!-- 相似调解案例 -->
+              <div v-show="state==='mediateCase'" v-for="item in mediateCase" :key="item.dissensionId" class="once_h">
+                <div class="title1">{{item.title}}</div>
                 <div class="title2">【案件详情】</div>
-                <div class="contents">任何组织和个人不得以妇女未婚、结婚、离婚、丧偶等为由，侵害妇女在农村集体经济组织中的各项权益因结婚男方到女方住所落户到，男方和子女享有与所在地农村集体经济组织成员平等的权益</div>
-              </div>
-              <div class="once_h">
-                <div class="title1">《最高人民法院关于人民法院审理未办结婚登记而以夫妻名义同居生活案件的若干意见》第四条</div>
-                <div class="title2" v-if="false">【案件详情】</div>
-                <div class="contents">任何组织和个人不得以妇女未婚、结婚、离婚、丧偶等为由，侵害妇女在农村集体经济组织中的各项权益因结婚男方到女方住所落户到，男方和子女享有与所在地农村集体经济组织成员平等的权益</div>
+                <div class="contents" v-html="keywords(item.mediateCircs)"></div>
               </div>
             </div>
+          </div>
+          <!-- 裁判文书适配 -->
+          <div class="otherInfo clearfix" v-if="searchType==='judgement'">
+            <div class="buttons" @click="showDom($event,'law',item.caseId)" :class="{'active':state==='law'&& dissensionId === item.caseId}">适用法条推荐</div>
+            <div class="buttons" @click="showDom($event,'judgement',item.caseId)" :class="{'active':state==='judgement'&& dissensionId === item.caseId}">类案裁判文书</div>
+          </div>
+          <div v-if="searchType==='judgement'" class="hide_c">
+            <div class="hideBlock" :class="{'delt1':state==='law'&& dissensionId === item.caseId,'delt2':state==='judgement'&& dissensionId === item.caseId,'delt3':state==='mediateCase'&& dissensionId === item.caseId,'active':state}">
+              <!-- 法条 -->
+              <div v-show="state==='law'" v-for="(item,index) in law" :key="index" class="once_h">
+                <div class="title1">{{item.lawItem}}</div>
+                <div class="contents" v-html="keywords(item.content)"></div>
+              </div>
+              <!-- 裁判文书 -->
+              <div v-show="state==='judgement'" v-for="item in judgement" :key="item.caseId" class="once_h">
+                <div class="title1">{{item.title}}</div>
+                <div class="title2">【判决理由】</div>
+                <div class="contents" v-html="keywords(item.trialReason)"></div>
+              </div>
+            </div>
+          </div>
+          <!-- 法律条文适配 -->
+          <div v-if="searchType==='law'&&item.keyword!==''" class="law_keyword clearfix">
+            <span class="keyword" v-for="(keyword,index) in arrToString(item.keyword)" :key="index">{{keyword}}</span>
           </div>
         </div>
         <div class="page">
@@ -144,10 +189,10 @@
             background
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :page-sizes="[100, 200, 300, 400]"
-            :page-size="100"
+            :page-sizes="[5,10,20]"
+            :page-size="pageSize"
             layout="sizes, prev, pager, next, jumper"
-            :total="400">
+            :total="pageTotal">
           </el-pagination>
         </div>
       </div>
@@ -156,80 +201,319 @@
 </template>
 
 <script>
+import { searchList, recommendList } from '@/api/api.js'
+import { mapState } from 'vuex'
+import { Message } from 'element-ui'
 export default {
   data () {
     return {
       state: '',
-      treeData: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }],
+      treeData: [],
       defaultProps: {
         children: 'children',
-        label: 'label'
+        label: 'name'
+      },
+      caseType: '',
+      caseTypeId: '',
+      keyword: [],
+      sortFlag: 'score',
+      keywordAggs: [],
+      pageTotal: 0,
+      pageSize: 5,
+      currentPage: 1,
+      primaryList: [], // 记录原始列表
+      renderList: [], // 实际渲染列表
+      dissensionId: '',
+      judgement: [],
+      law: [],
+      protocol: [],
+      mediateCase: []
+    }
+  },
+  computed: {
+    ...mapState('header', {
+      searchVal: state => state.searchVal,
+      searchType: state => state.searchType
+    }),
+    keywordArr () {
+      let arr = []
+      arr.push({
+        type: 'searchVal',
+        val: this.searchVal
+      })
+      if (this.caseType !== '') {
+        arr.push({
+          type: 'caseType',
+          val: '案件分类:' + this.caseType,
+          name: this.caseType
+        })
       }
+      this.keyword.forEach((item) => {
+        arr.push({
+          type: 'keyword',
+          val: '关键词:' + item,
+          name: item
+        })
+      })
+      return arr
+    }
+  },
+  watch: {
+    // 监控跟搜索有关的参数
+    keywordArr: function (to, from) {
+      let _this = this
+      this.searchListInit().then(() => {
+        _this.render()
+      })
+    },
+    sortFlag: function (to, from) {
+      let _this = this
+      this.searchListInit().then(() => {
+        _this.render()
+      })
+    },
+    searchType: function (to, from) {
+      let _this = this
+      this.searchListInit().then(() => {
+        _this.render()
+      })
+    }
+  },
+  filters: {
+    changeNull (val) {
+      return !val ? '暂无信息' : val
     }
   },
   methods: {
-    showDom (ev, val) {
-      this.state = val
-      // 重置所有元素,这里可以用ref标记所有dom元素,就不要操作数组了,可以精确到每个元素
-      // 接口集成的时候注意一下上面这句话！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-      document.querySelectorAll('.hide_c').forEach((item) => {
-        item.style.height = '0px'
-      })
-      // 要把node的height变成实际值
+    // 展示列表的下拉框
+    showDom (ev, val, id) {
+      let _this = this
+      // 选取节点
       let node = ev.target.parentElement.nextElementSibling
-      let height = node.firstElementChild.offsetHeight
-      node.style.height = height + 'px'
+      // 优化一下推荐列表接口的调用
+      if (this.dissensionId === id) {
+        if (this.state !== val) {
+          this.state = val
+          this.$nextTick(() => {
+            // 重置所有元素,这里可以用ref标记所有dom元素,就不要操作数组了,可以精确到每个元素
+            document.querySelectorAll('.hide_c').forEach((item) => {
+              item.style.height = '0px'
+            })
+            // 要把node的height变成实际值
+            let height = node.firstElementChild.offsetHeight
+            node.style.height = height + 'px'
+          })
+        } else {
+          document.querySelectorAll('.hide_c').forEach((item) => {
+            item.style.height = '0px'
+          })
+          this.state = ''
+        }
+      } else {
+        // 获取推荐列表
+        recommendList({
+          id: id,
+          detailType: _this.searchType
+        }).then((res) => {
+          console.log(res)
+          if (res.code === 1) {
+            let data = res.data
+            if (data.judgement && data.judgement.length >= 1) { _this.judgement = data.judgement.slice(0, 2) }
+            if (data.law && data.law.length >= 1) { _this.law = data.law.slice(0, 2) }
+            if (data.protocol && data.protocol.length >= 1) { _this.protocol = data.protocol.slice(0, 2) }
+            if (data.mediateCase && data.mediateCase.length >= 1) { _this.mediateCase = data.mediateCase.slice(0, 2) }
+          } else {
+            Message({
+              message: res.message,
+              type: 'warning'
+            })
+          }
+          _this.state = val
+          _this.dissensionId = id
+          // 更新dom后再修改高度
+          _this.$nextTick(() => {
+            // 重置所有元素,这里可以用ref标记所有dom元素,就不要操作数组了,可以精确到每个元素
+            document.querySelectorAll('.hide_c').forEach((item) => {
+              item.style.height = '0px'
+              let height = node.firstElementChild.offsetHeight
+              node.style.height = height + 'px'
+            })
+          })
+        })
+      }
     },
     // 分页插件事件
     handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
+      this.pageSize = val
+      this.render()
     },
     handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
+      this.currentPage = val
+      this.render()
     },
     // 树形插件点击事件
     handleNodeClick (data) {
       console.log(data)
+      this.caseType = data.realName
+      this.caseTypeId = data.id
+    },
+    // 搜索接口
+    searchListApi () {
+      let _this = this
+      return new Promise((resolve, reject) => {
+        searchList({
+          query: _this.searchVal,
+          queryType: _this.searchType,
+          caseType: _this.caseTypeId,
+          keyword: _this.keyword,
+          sortFlag: _this.sortFlag
+        }).then((res) => {
+          resolve(res)
+        }).catch((err) => {
+          reject(err)
+        })
+      })
+    },
+    // 初始化搜索列表
+    searchListInit () {
+      let _this = this
+      return new Promise((resolve, reject) => {
+        _this.searchListApi().then((res) => {
+          console.log(res)
+          let data = res.data
+          if (res.code === 1) {
+            // 左侧案件分类树和关键词
+            _this.treeData = data.typeAggs.map((item) => {
+              item.children = item.children || []
+              return {
+                'name': item.name + '(' + item.value + ')',
+                'realName': item.name,
+                'id': item.typeId,
+                'children': item.children.map((item) => {
+                  return {
+                    'name': item.name + '(' + item.value + ')',
+                    'realName': item.name,
+                    'id': item.typeId
+                  }
+                })
+              }
+            })
+            _this.keywordAggs = data.keywordAggs
+            // 分页
+            _this.pageTotal = data.result.length
+            // 记录原始数据
+            _this.primaryList = data.result
+            resolve()
+          } else {
+            Message({
+              message: res.message,
+              type: 'warning'
+            })
+          }
+        })
+      })
+    },
+    // 渲染搜索列表
+    render () {
+      let start = (this.currentPage - 1) * this.pageSize
+      let end = this.currentPage * this.pageSize
+      this.renderList = this.primaryList.slice(start, end)
+      console.log(this.renderList)
+      // 渲染的时候滚动条滚到最上面
+      this.goTop()
+    },
+    // 滚动条体验优化
+    goTop () {
+      this.state = ''
+      this.dissensionId = ''
+      // 分页的时候重置一下元素
+      document.querySelectorAll('.hide_c').forEach((item) => {
+        item.style.height = '0px'
+      })
+      // document.querySelectorAll('.otherInfo').forEach((item) => {
+      //   item.style.height = '45px'
+      // })
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      let index = 1
+      let timer = setInterval(() => {
+        document.querySelector('html').scrollTop -= scrollTop / 20
+        index++
+        if (index === 21) { clearInterval(timer) }
+      }, 10)
+    },
+    // 标红关键字
+    keywords (val) {
+      // 判断val是否为undefined，解决v-if机制问题，未查明原因
+      if (val) {
+        let keyWords = new RegExp('([' + this.searchVal + ']{2,})', 'gi')
+        let newval = val.replace(/\\n/g, '')
+        newval = newval.length > 110 ? newval.substring(0, 110) + '...' : newval
+        return newval.replace(keyWords, `<em style="color:#F74D4E;font-size:inherit">$1</em>`)
+      }
+    },
+    // 添加关键词
+    addKeyword (val) {
+      if (val.value !== 0 && this.keyword.indexOf(val.name) === -1) {
+        this.keyword.push(val.name)
+      } else if (this.keyword.indexOf(val.name) !== -1) {
+        Message({
+          message: '请不要重复选取关键词',
+          type: 'warning'
+        })
+      } else if (val.value === 0) {
+        Message({
+          message: '找不到该关键词的搜索结果  ',
+          type: 'warning'
+        })
+      }
+    },
+    // 删除关键词
+    deleteKeyword (val) {
+      if (val.type === 'searchVal') {
+
+      } else if (val.type === 'caseType') {
+        this.caseType = ''
+        this.caseTypeId = ''
+      } else if (val.type === 'keyword') {
+        this.keyword.splice(this.keyword.indexOf(val.name), 1)
+      }
+    },
+    // 处理字符串变数组
+    arrToString (val) {
+      return val.split('|')
+    },
+    // 打开新窗口
+    openUrl (url, id) {
+      window.open(window.location.origin + '/#/' + url + '/' + id)
     }
+  },
+  mounted () {
+    let _this = this
+    this.searchListInit().then(() => {
+      _this.render()
+    })
   }
 }
 </script>
 
 <style lang="less">
+  // 过渡动画
+  .rotate-enter-active{
+    transition:0.6s ease;
+  }
+  .rotate-leave-active{
+    transition: 0.4s ease;
+  }
+  .rotate-enter{
+    opacity: 0;
+    transform: rotateY(180deg);
+  }
+  .rotate-leave-to{
+    opacity: 0;
+    transform: rotateY(180deg);
+  }
+
+  // element-ui
   .el-pager{
     .number{
       background-color: #ffffff!important;
@@ -240,6 +524,44 @@ export default {
   }
   .el-pagination button{
     background-color:#ffffff!important;
+  }
+  .el-tree-node__expand-icon{
+    color:#808080;
+  }
+  .el-tree-node__expand-icon.is-leaf{
+    // width: 4px;
+    // height: 8px;
+    margin-left:10px;
+    margin-right: 8px;
+    padding:2.5px;
+    font-size: 0;
+    border-radius: 50%;
+    background: #808080;
+  }
+  .el-tree-node__content{
+    &:hover{
+      .el-tree-node__expand-icon{
+        color:#669AFF;
+      }
+      .el-tree-node__expand-icon.is-leaf{
+        background: #669AFF;
+      }
+      color:#669AFF;
+      background: rgb(240,240,240)
+    }
+  }
+  .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content{
+    background: rgb(240,240,240);
+    color:#669AFF;
+    .el-tree-node__expand-icon.is-leaf{
+      background: #669AFF;
+    }
+    .el-tree-node__expand-icon{
+      color:#669AFF;
+    }
+  }
+  .el-pagination.is-background .el-pager li:not(.disabled).active{
+    background: #669AFF;
   }
 </style>
 
