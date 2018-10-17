@@ -12,10 +12,10 @@
       <div class="logo"></div>
       <!-- 类型选择 -->
       <div class="types">
-        <span class="span active">调解案例</span>
-        <span class="span">调解协议</span>
-        <span class="span">裁判文书</span>
-        <span class="span">法律法规</span>
+        <span class="span" :class="{'active':searchType === 'mediateCase'}" @click="searchType = 'mediateCase'">调解案例</span>
+        <span class="span" :class="{'active':searchType === 'protocol'}" @click="searchType = 'protocol'">调解协议</span>
+        <span class="span" :class="{'active':searchType === 'judgement'}" @click="searchType = 'judgement'">裁判文书</span>
+        <span class="span" :class="{'active':searchType === 'law'}" @click="searchType = 'law'">法律法规</span>
       </div>
       <!-- 搜索框 -->
       <div class="search_c">
@@ -26,12 +26,13 @@
             placeholder="请输入关键词或案件详情"
             @select="handleSelect"
             :trigger-on-focus="false"
+            @keydown.enter.native = "goSearch"
           >
           <template slot-scope="props">
             <div class="name">{{ props.item.text }}</div>
           </template>
           </el-autocomplete>
-        <div class="search_btn">
+        <div @click="goSearch" class="search_btn">
           <i class="icon el-icon-search"></i>
         </div>
       </div>
@@ -39,25 +40,25 @@
       <div class="number_c">
         <div class="box">
           <div class="img img1"></div>
-          <span class="num">1229<em>篇</em></span>
+          <span class="num">{{reqCount.caseCount}}<em>篇</em></span>
           <span class="name">精品案例</span>
         </div>
         <i class="border"></i>
         <div class="box">
           <div class="img img2"></div>
-          <span class="num">1229<em>篇</em></span>
+          <span class="num">{{reqCount.judgementCount}}<em>篇</em></span>
           <span class="name">裁判文书</span>
         </div>
         <i class="border"></i>
         <div class="box">
           <div class="img img3"></div>
-          <span class="num">1229<em>篇</em></span>
+          <span class="num">{{reqCount.protocolCount}}<em>篇</em></span>
           <span class="name">协议书总量</span>
         </div>
         <i class="border"></i>
         <div class="box">
           <div class="img img4"></div>
-          <span class="num">1229<em>次</em></span>
+          <span class="num">{{reqCount.requestCount}}<em>次</em></span>
           <span class="name">访问总量</span>
         </div>
       </div>
@@ -111,8 +112,8 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
-import { tipsCN, tipsEN, recommend, collectionList, collection } from '@/api/api.js'
+import { mapState, mapMutations } from 'vuex'
+import { tipsCN, tipsEN, recommend, collectionList, collection, requestCount } from '@/api/api.js'
 import { Message } from 'element-ui'
 export default {
   name: 'home',
@@ -120,9 +121,16 @@ export default {
     return {
       showWhich: 'recommend',
       search: '',
+      searchType: 'mediateCase',
       commonArr: [],
       hotArr: [],
-      collectionArr: []
+      collectionArr: [],
+      reqCount: {
+        caseCount: 0,
+        judgementCount: '',
+        protocolCount: '',
+        requestCount: ''
+      }
     }
   },
   computed: {
@@ -149,6 +157,10 @@ export default {
     }
   },
   methods: {
+    ...mapMutations({
+      changeSearchVal: 'header/changeSearchVal',
+      changeSearchType: 'header/changeSearchType'
+    }),
     // 获取汉字
     ifCN (v) {
       if (v === '' || (/^\s*$/gi).test(v)) return ''
@@ -159,12 +171,11 @@ export default {
     },
     // 选择下拉列表搜索条件
     handleSelect (select) {
-      console.log(select)
       this.search = select.text
+      this.goSearch()
     },
     // 搜索提示
     querySearch (queryString, callback) {
-      console.log(this.ifCN(queryString))
       let CN = this.ifCN(queryString)
       if (CN) {
         tipsCN({'prefix': CN}).then((res) => {
@@ -230,9 +241,16 @@ export default {
       } else if (type === 'law') {
         this.$router.push('/lawsDetail/' + id)
       }
+    },
+    // 跳转搜索页
+    goSearch () {
+      let _this = this
+      this.changeSearchVal(_this.search)
+      this.changeSearchType(_this.searchType)
+      this.$router.push('/searchList')
     }
   },
-  created () {
+  mounted () {
     let _this = this
     // 初始化推荐列表
     this.recommendInit().then((res) => {
@@ -261,6 +279,10 @@ export default {
         }
       })
     }
+    // 初始化访问量统计
+    requestCount().then((res) => {
+      _this.reqCount = res.data
+    })
   }
 }
 </script>
