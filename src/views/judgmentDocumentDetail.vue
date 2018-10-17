@@ -53,8 +53,6 @@
     <!-- 侧边栏组件 -->
     <div class="sideContainer">
       <side-bar url='judgmentDocumentDetail' title="类案裁判文书" :data="judgement"></side-bar>
-      <side-bar url='mediationAgreementDetail' title="类案调解协议" :data="protocol"></side-bar>
-      <side-bar url='mediationCaseDetails' title="其他相似案例" :data="mediateCase"></side-bar>
       <side-bar url='' title="使用法条推荐" :data="law" model="details"></side-bar>
     </div>
   </div>
@@ -80,9 +78,7 @@ export default {
       collectFlag: 0,
       catalog: [],
       judgement: [],
-      law: [],
-      mediateCase: [],
-      protocol: []
+      law: []
     }
   },
   filters: {
@@ -121,7 +117,7 @@ export default {
     // 获取推荐
     recommendList({
       id: _this.$route.params.id,
-      detailType: 'mediateCase'
+      detailType: 'judgement'
     }).then((res) => {
       if (res.code === 1) {
         let data = res.data
@@ -138,20 +134,6 @@ export default {
             'name': item.lawItem,
             'value': item.number,
             'content': item.content
-          }
-        })
-        _this.mediateCase = data.mediateCase.map((item) => {
-          return {
-            'name': item.title,
-            'value': item.dissensionId,
-            'content': item.mediateCircs
-          }
-        })
-        _this.protocol = data.protocol.map((item) => {
-          return {
-            'name': item.title,
-            'value': item.protocolId,
-            'content': item.dealdispute
           }
         })
       } else {

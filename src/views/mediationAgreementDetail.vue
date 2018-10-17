@@ -189,7 +189,7 @@ export default {
       if (res.code === 1) {
         let {title, num, system, smallClass, dateaccepted, refereeDept, refereeName, dealAgreement, fulfillway, agreementAmount, performAmount, collectFlag, content, protocolId} = res.data
         // 处理旅行方式
-        fulfillway = fulfillway.split(',')
+        fulfillway = fulfillway ? fulfillway.split(',') : []
         _this.agreementDetail = {title, num, system, smallClass, dateaccepted, refereeDept, refereeName, dealAgreement, fulfillway, agreementAmount, performAmount, protocolId}
         _this.collectFlag = collectFlag
         _this.content = content
@@ -208,7 +208,7 @@ export default {
     // 获取推荐
     recommendList({
       id: _this.$route.params.id,
-      detailType: 'mediateCase'
+      detailType: 'protocol'
     }).then((res) => {
       if (res.code === 1) {
         let data = res.data

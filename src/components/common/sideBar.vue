@@ -17,7 +17,7 @@
         </div>
     </div>
     <div v-if="model==='details'" class="ul details">
-        <div class="li" v-for="(item,index) in data" :key="index" :style="{height:item.name.length > 20 ? '39px' : '19px'}">
+        <div class="li" v-for="(item,index) in data" :key="index" :style="{height:item.name.length > 19 ? '39px' : '19px'}">
           <span v-if="item.name.length<=40" @click="showDetail($event)" class="name">{{item.name|subText}}</span>
           <el-tooltip v-if="item.name.length>40" class="item" effect="dark" :content="item.name" placement="right">
             <span @click="showDetail($event)" class="name">{{item.name|subText}}</span>
@@ -89,8 +89,12 @@ export default {
     },
     // 第一种 跳转链接
     goToDetail (val) {
-      let url = '/' + this.url + val
+      let url = '/' + this.url + '/' + val
       this.$router.push(url)
+      // 如果当前页面只更改哈希，页面不会刷新，手动刷新，这里的name和页面路由一样，如有区别请手动正则\
+      if (this.url === this.$route.name) {
+        window.location.reload()
+      }
     }
   },
   mounted () {

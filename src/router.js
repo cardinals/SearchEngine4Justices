@@ -36,37 +36,37 @@ export default new Router({
     // 登录
     {
       path: '/login',
-      name: '登录',
+      name: 'login',
       component: () => import('./views/login.vue')
     },
     // 调解协议书详情页
     {
-      path: '/MediationAgreementDetail/:id',
-      name: '调解协议书详情',
+      path: '/mediationAgreementDetail/:id',
+      name: 'mediationAgreementDetail',
       component: () => import('./views/mediationAgreementDetail.vue')
     },
     // 裁判文书详情页
     {
       path: '/judgmentDocumentDetail/:id',
-      name: '裁判文书详情',
+      name: 'judgmentDocumentDetail',
       component: () => import('./views/judgmentDocumentDetail.vue')
     },
     // 调解案件详情页
     {
       path: '/mediationCaseDetails/:id',
-      name: '调解案件详情',
+      name: 'mediationCaseDetails',
       component: () => import('./views/mediationCaseDetails.vue')
     },
     // 法律法规详情页
     {
       path: '/lawsDetail/:id',
-      name: '法律法规详情',
+      name: 'lawsDetail',
       component: () => import('./views/lawsDetail.vue')
     },
     // 搜索列表页
     {
       path: '/searchList',
-      name: '搜索列表页',
+      name: 'searchList',
       component: () => import('./views/searchList.vue')
     }
   ]

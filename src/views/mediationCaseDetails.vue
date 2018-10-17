@@ -181,7 +181,6 @@ export default {
       id: _this.$route.params.id,
       detailType: 'mediateCase'
     }).then((res) => {
-      console.log(res)
       if (res.code === 1) {
         let data = res.data
         // 处理一下数据成为组件标准格式
