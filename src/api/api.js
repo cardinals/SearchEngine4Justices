@@ -36,6 +36,8 @@ export const logout = () => get(`${baseUrl}/user/logout`, {})
 export const tipsCN = (params) => get(`${baseUrl}/suggest/hanZi`, params)
 // 英文提示
 export const tipsEN = (params) => get(`${baseUrl}/suggest/pinYin`, params)
+// 首页访问量统计
+export const requestCount = (params) => get(`${baseUrl}/mediate/requestCount`, params)
 // 推荐列表
 export const recommend = () => get(`${baseUrl}/user/recommend`, {})
 // 收藏列表
@@ -52,3 +54,7 @@ export const protocol = (params) => get(`${baseUrl}/detail/protocol`, params)
 export const judgement = (params) => get(`${baseUrl}/detail/judgement`, params)
 // 法律条文详情
 export const law = (params) => get(`${baseUrl}/detail/law`, params)
+// 推荐各种接口
+export const recommendList = (params) => get(`${baseUrl}/mediate/recommendList`, params)
+// 搜索列表页
+export const searchList = (params) => post(`${baseUrl}/mediate/list`, params)

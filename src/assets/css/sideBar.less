@@ -11,6 +11,7 @@
     height: @height;
     overflow: hidden;
     padding: 0 8px;
+    color:#474747;
     .main{
       font-size: 18px;
       line-height: @height;
@@ -21,7 +22,7 @@
       cursor: pointer;
       color: rgba(0,0,0,0.65);
       &:hover{
-        color:#4653fe;
+        color:#669AFF;
       }
       .show{
         font-size: 14px;
@@ -46,14 +47,19 @@
       transition:height 0.5s linear;
       position: relative;
       padding:0 8px 0 30px;
+      color:#8B8B8B;
       &:hover{
         .name{
-          color:#4967FE;
+          color:#669AFF;
         }
-        background:rgba(73,103,254,0.2);
+        .point{
+          background: #669AFF;
+        }
+        background:#F6F6F6!important;
       }
       .name{
         cursor: pointer;
+        width: 100%;
       }
       .content{
         display: block;
@@ -68,6 +74,50 @@
         border-radius:50%;
         left: 16px;
         top: 7px;
+      }
+    }
+  }
+  .details{
+    .li{
+      padding-right: 30px!important;
+      &:hover{
+        .unshow{
+          display: inline-block;
+          border-top:5px solid transparent;
+          border-bottom:5px solid transparent;
+          border-right:5px solid transparent;
+          border-left:7px solid #669AFF;
+        }
+        .show{
+          border-top:7px solid #669AFF;
+        }
+      }
+      &.gray{
+        background: #F6F6F6;
+      }
+      &.white{
+        background: #ffffff;
+      }
+    }
+    .triangle{
+      display:none;
+      width: 0;
+      height: 0;
+      position: absolute;
+      right: 12px;
+      top: 5px;
+      border-top:5px solid transparent;
+      border-bottom:5px solid transparent;
+      border-right:5px solid transparent;
+      border-left:7px solid rgba(139,139,139,1);
+      &.show{
+        right: 15px;
+        top: 7px;
+        border-top:7px solid rgba(139,139,139,1);
+        border-bottom:5px solid transparent;
+        border-right:5px solid transparent;
+        border-left:5px solid transparent;
+        display: inline-block;
       }
     }
   }

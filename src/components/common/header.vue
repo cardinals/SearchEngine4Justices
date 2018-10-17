@@ -14,12 +14,13 @@
       </div>
       <div  v-if="$route.fullPath!=='/home'" class="search_c">
         <div class="select_c">
-           <el-select v-model="value" placeholder="请选择">
+           <el-select v-model="searchType" placeholder="请选择" @change="selectType">
             <el-option
               v-for="item in options"
               :key="item.value"
               :label="item.label"
-              :value="item.value">
+              :value="item.value"
+            >
             </el-option>
           </el-select>
         </div>
@@ -27,10 +28,11 @@
         <div class="search">
           <el-autocomplete
             class="inline-input"
-            v-model="search"
+            v-model="searchVal"
             :fetch-suggestions="querySearch"
             placeholder="请输入关键词或案件详情"
             @select="handleSelect"
+            @keydown.enter.native = "goSearch"
             :trigger-on-focus="false"
           >
           <template slot-scope="props">
@@ -38,7 +40,7 @@
           </template>
           </el-autocomplete>
         </div>
-        <div class="search_btn">
+        <div @click="goSearch" class="search_btn">
           <i class="el-icon-search"></i>
         </div>
       </div>
@@ -61,36 +63,54 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 import { tipsCN, tipsEN } from '@/api/api.js'
 import {Message} from 'element-ui'
 export default {
-  components: {},
   data () {
     return {
       options: [{
-        value: '01',
+        value: 'mediateCase',
         label: '调解案例'
       }, {
-        value: '02',
+        value: 'protocol',
         label: '调解协议'
       }, {
-        value: '03',
+        value: 'judgement',
         label: '裁判文书'
       }, {
-        value: '04',
+        value: 'law',
         label: '法律条文'
-      }],
-      value: '01',
-      search: ''
+      }]
     }
   },
   computed: {
     ...mapState('header', {
       ifLogin: state => state.ifLogin
-    })
+    }),
+    // vue最近更新了版本，要求必须在计算属性里加上setter，否则报错。
+    searchType: {
+      get: function () {
+        return this.$store.state.header.searchType
+      },
+      set: function (newVal) {
+      }
+    },
+    // 重写set方法
+    searchVal: {
+      get: function () {
+        return this.$store.state.header.searchVal
+      },
+      set: function (newVal) {
+        this.changeSearchVal(newVal)
+      }
+    }
   },
   methods: {
+    ...mapMutations({
+      changeSearchVal: 'header/changeSearchVal',
+      changeSearchType: 'header/changeSearchType'
+    }),
     ...mapActions({
       changeLoginAsync: 'header/changeLoginAsync',
       logoutAsync: 'header/logoutAsync'
@@ -127,12 +147,10 @@ export default {
     },
     // 选择下拉列表搜索条件
     handleSelect (select) {
-      console.log(select)
-      this.search = select.text
+      this.changeSearchVal(select.text)
     },
     // 搜索提示
     querySearch (queryString, callback) {
-      console.log(this.ifCN(queryString))
       let CN = this.ifCN(queryString)
       if (CN) {
         tipsCN({'prefix': CN}).then((res) => {
@@ -143,6 +161,19 @@ export default {
           callback(res.data)
         })
       }
+    },
+    // 选择类型
+    selectType (val) {
+      this.changeSearchType(val)
+    },
+    goSearch () {
+      let _this = this
+      console.log(_this.searchVal)
+      this.changeSearchVal(_this.searchVal)
+      this.changeSearchType(_this.searchType)
+      if (this.$route.name !== 'searchList') {
+        this.$router.push('/searchList')
+      }
     }
   },
   mounted () {
@@ -150,6 +181,12 @@ export default {
   }
 }
 </script>
+<style>
+.header .el-autocomplete .el-input__inner{
+  color: #474747!important;
+}
+</style>
+
 <style lang="less">
   @import '~@/assets/css/header.less';
 </style>

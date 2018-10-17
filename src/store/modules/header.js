@@ -7,7 +7,7 @@ const state = {
   // 搜索框内容
   searchVal: '',
   // 搜索类型
-  searchType: ''
+  searchType: 'mediateCase'
 }
 
 // mutations
