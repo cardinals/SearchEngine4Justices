@@ -46,7 +46,7 @@
         <i class="border"></i>
         <div class="box">
           <div class="img img2"></div>
-          <span class="num">{{reqCount.judgementCount}}<em>篇</em></span>
+          <span class="num">{{reqCount.judgementCount}}<em>万篇</em></span>
           <span class="name">裁判文书</span>
         </div>
         <i class="border"></i>
@@ -127,10 +127,12 @@ export default {
       collectionArr: [],
       reqCount: {
         caseCount: 0,
-        judgementCount: '',
-        protocolCount: '',
-        requestCount: ''
-      }
+        judgementCount: 0,
+        protocolCount: 0,
+        requestCount: 0
+      },
+      pages: 1,
+      flag: true
     }
   },
   computed: {
@@ -149,9 +151,10 @@ export default {
   watch: {
     // 监控一下header的是否登录状态,注意这里不要用箭头函数导致this指向有问题
     ifLogin: function (to, from) {
+      let _this = this
       if (to) {
         this.collectionListInit(1).then((res) => {
-          console.log(res)
+          _this.collectionArr = res.data.pageData
         })
       }
     }
@@ -247,7 +250,7 @@ export default {
       let _this = this
       this.changeSearchVal(_this.search)
       this.changeSearchType(_this.searchType)
-      this.$router.push('/searchList')
+      this.$router.push('/searchList/' + _this.searchType + '/' + _this.search)
     }
   },
   mounted () {
@@ -268,7 +271,7 @@ export default {
     // 如果从登录页面进来，则需要watch ifLogin状态的异步操作
     // 初始化收藏列表
     if (this.ifLogin) {
-      this.collectionListInit(1).then((res) => {
+      this.collectionListInit(_this.pages).then((res) => {
         if (res.code === 1) {
           _this.collectionArr = res.data.pageData
         } else {
@@ -281,7 +284,47 @@ export default {
     }
     // 初始化访问量统计
     requestCount().then((res) => {
-      _this.reqCount = res.data
+      // 加个数字滚动效果
+      let index = 0
+      let data = res.data
+      let timer = setInterval(() => {
+        if (index >= 21) {
+          clearInterval(timer)
+        } else {
+          _this.reqCount = {
+            caseCount: parseInt(parseInt(data.caseCount) / 20 * index),
+            judgementCount: parseFloat(parseFloat(data.judgementCount) / 20 * index).toFixed(1),
+            protocolCount: parseInt(parseInt(data.protocolCount) / 20 * index),
+            requestCount: parseInt(parseInt(data.requestCount) / 20 * index)
+          }
+          index++
+        }
+      }, 50)
+    })
+    // 添加滚轮事件添加收藏列表
+    window.addEventListener('mousewheel', function (ev) {
+      if ((ev.wheelDelta < 0 || ev.detail < 0) && _this.showWhich === 'collection' && _this.ifLogin && _this.flag) {
+        _this.pages += 1
+        _this.collectionListInit(_this.pages).then((res) => {
+          if (res.code === 1) {
+            if (res.data.pageData.length === 0) {
+              Message({
+                message: '没有更多收藏了',
+                type: 'warning'
+              })
+              _this.flag = false
+            }
+            res.data.pageData.forEach((item) => {
+              _this.collectionArr.push(item)
+            })
+          } else {
+            Message({
+              message: res.message,
+              type: 'warning'
+            })
+          }
+        })
+      }
     })
   }
 }

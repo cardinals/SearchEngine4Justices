@@ -46,7 +46,7 @@
       </div>
       <div class="menu_c">
         <div class="icon"></div>
-        <div class="menu clearfix">
+        <div class="menu clearfix" v-if="ifLogin">
           <el-dropdown @command="goLogin" trigger="click">
             <span class="el-dropdown-link">
               {{ifLogin?'已登录':'未登录'}}
@@ -57,6 +57,7 @@
             </el-dropdown-menu>
           </el-dropdown>
         </div>
+        <div v-if="!ifLogin" class="menu2" @click="goLogin(false)">登录</div>
       </div>
     </div>
   </div>
@@ -168,11 +169,10 @@ export default {
     },
     goSearch () {
       let _this = this
-      console.log(_this.searchVal)
       this.changeSearchVal(_this.searchVal)
       this.changeSearchType(_this.searchType)
       if (this.$route.name !== 'searchList') {
-        this.$router.push('/searchList')
+        this.$router.push('/searchList/' + _this.searchType + '/' + _this.searchVal)
       }
     }
   },

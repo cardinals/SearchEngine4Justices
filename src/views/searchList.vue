@@ -8,7 +8,7 @@
           <span class="iconx" @click="deleteKeyword(item)">×</span>
         </div>
       </transition-group>
-      <div class="reset" v-if="keywordArr.length!==0">重置条件</div>
+      <div @click="resetAll" class="reset" v-if="keywordArr.length!==0">重置条件</div>
     </div>
     <!-- 相关搜索暂时不要 -->
     <div v-if="false" class="searchCondition">
@@ -40,10 +40,11 @@
             <span>关键词</span>
           </div>
           <div class="main">
-            <div @click="addKeyword(item)" class="once" v-for="(item,index) in keywordAggs" :key="index">
+            <div v-if="keywordAggs.length>0" @click="addKeyword(item)" class="once" v-for="(item,index) in keywordAggs" :key="index">
               <i class="circle"></i>
               <span class="">{{item.name + '(' + item.value + ')'}}</span>
             </div>
+            <div class="no-data" v-if="keywordAggs.length===0">暂无数据</div>
           </div>
         </div>
       </div>
@@ -111,22 +112,22 @@
             <div class="buttons" @click="showDom($event,'judgement',item.dissensionId)" :class="{'active':state==='judgement'&& dissensionId === item.dissensionId}">类案裁判文书</div>
             <div class="buttons" @click="showDom($event,'protocol',item.dissensionId)" :class="{'active':state==='protocol'&& dissensionId === item.dissensionId}">类案调解协议</div>
           </div>
-          <div v-if="searchType==='mediateCase'" class="hide_c">
+          <div class="hide_c" :ref="item.dissensionId" v-if="searchType==='mediateCase'">
             <div class="hideBlock" :class="{'delt1':state==='law'&& dissensionId === item.dissensionId,'delt2':state==='judgement'&& dissensionId === item.dissensionId,'delt3':state==='protocol'&& dissensionId === item.dissensionId,'active':state}">
               <!-- 法条 -->
               <div v-show="state==='law'" v-for="(item,index) in law" :key="index" class="once_h">
-                <div class="title1">{{item.lawItem}}</div>
+                <div class="title1" @click="openUrl('lawsDetail',item.number)"><div class="rect"></div>{{item.lawItem}}</div>
                 <div class="contents" v-html="keywords(item.content)"></div>
               </div>
               <!-- 裁判文书 -->
               <div v-show="state==='judgement'" v-for="item in judgement" :key="item.caseId" class="once_h">
-                <div class="title1">{{item.title}}</div>
+                <div class="title1"  @click="openUrl('judgmentDocumentDetail',item.caseId)"><div class="rect"></div>{{item.title}}</div>
                 <div class="title2">【判决理由】</div>
                 <div class="contents" v-html="keywords(item.trialReason)"></div>
               </div>
               <!-- 类案协议 -->
               <div v-show="state==='protocol'" v-for="item in protocol" :key="item.protocolId" class="once_h">
-                <div class="title1">{{item.title}}</div>
+                <div class="title1" @click="openUrl('mediationAgreementDetail',item.protocolId)"><div class="rect"></div>{{item.title}}</div>
                 <div class="title2">【案件详情】</div>
                 <div class="contents" v-html="keywords(item.dealdispute)"></div>
               </div>
@@ -138,22 +139,22 @@
             <div class="buttons" @click="showDom($event,'judgement',item.protocolId)" :class="{'active':state==='judgement'&& dissensionId === item.protocolId}">类案裁判文书</div>
             <div class="buttons" @click="showDom($event,'mediateCase',item.protocolId)" :class="{'active':state==='mediateCase'&& dissensionId === item.protocolId}">相似调解案例</div>
           </div>
-          <div v-if="searchType==='protocol'" class="hide_c">
+          <div class="hide_c" :ref="item.protocolId" v-if="searchType==='protocol'">
             <div class="hideBlock" :class="{'delt1':state==='law'&& dissensionId === item.protocolId,'delt2':state==='judgement'&& dissensionId === item.protocolId,'delt3':state==='mediateCase'&& dissensionId === item.protocolId,'active':state}">
               <!-- 法条 -->
               <div v-show="state==='law'" v-for="(item,index) in law" :key="index" class="once_h">
-                <div class="title1">{{item.lawItem}}</div>
+                <div class="title1" @click="openUrl('lawsDetail',item.number)"><div class="rect"></div>{{item.lawItem}}</div>
                 <div class="contents" v-html="keywords(item.content)"></div>
               </div>
               <!-- 裁判文书 -->
               <div v-show="state==='judgement'" v-for="item in judgement" :key="item.caseId" class="once_h">
-                <div class="title1">{{item.title}}</div>
+                <div class="title1"   @click="openUrl('judgmentDocumentDetail',item.caseId)"><div class="rect"></div>{{item.title}}</div>
                 <div class="title2">【判决理由】</div>
                 <div class="contents" v-html="keywords(item.trialReason)"></div>
               </div>
               <!-- 相似调解案例 -->
               <div v-show="state==='mediateCase'" v-for="item in mediateCase" :key="item.dissensionId" class="once_h">
-                <div class="title1">{{item.title}}</div>
+                <div class="title1" @click="openUrl('mediationCaseDetails',item.dissensionId)"><div class="rect"></div>{{item.title}}</div>
                 <div class="title2">【案件详情】</div>
                 <div class="contents" v-html="keywords(item.mediateCircs)"></div>
               </div>
@@ -164,26 +165,27 @@
             <div class="buttons" @click="showDom($event,'law',item.caseId)" :class="{'active':state==='law'&& dissensionId === item.caseId}">适用法条推荐</div>
             <div class="buttons" @click="showDom($event,'judgement',item.caseId)" :class="{'active':state==='judgement'&& dissensionId === item.caseId}">类案裁判文书</div>
           </div>
-          <div v-if="searchType==='judgement'" class="hide_c">
+          <div class="hide_c" :ref="item.caseId" v-if="searchType==='judgement'">
             <div class="hideBlock" :class="{'delt1':state==='law'&& dissensionId === item.caseId,'delt2':state==='judgement'&& dissensionId === item.caseId,'delt3':state==='mediateCase'&& dissensionId === item.caseId,'active':state}">
               <!-- 法条 -->
               <div v-show="state==='law'" v-for="(item,index) in law" :key="index" class="once_h">
-                <div class="title1">{{item.lawItem}}</div>
+                <div class="title1" @click="openUrl('lawsDetail',item.number)"><div class="rect"></div>{{item.lawItem}}</div>
                 <div class="contents" v-html="keywords(item.content)"></div>
               </div>
               <!-- 裁判文书 -->
               <div v-show="state==='judgement'" v-for="item in judgement" :key="item.caseId" class="once_h">
-                <div class="title1">{{item.title}}</div>
+                <div class="title1"  @click="openUrl('judgmentDocumentDetail',item.caseId)"><div class="rect"></div>{{item.title}}</div>
                 <div class="title2">【判决理由】</div>
                 <div class="contents" v-html="keywords(item.trialReason)"></div>
               </div>
             </div>
           </div>
           <!-- 法律条文适配 -->
-          <div v-if="searchType==='law'&&item.keyword!==''" class="law_keyword clearfix">
+          <div class="law_keyword clearfix" v-if="searchType==='law'&&item.keyword!==''">
             <span class="keyword" v-for="(keyword,index) in arrToString(item.keyword)" :key="index">{{keyword}}</span>
           </div>
         </div>
+        <div class="nodataImg" v-if="renderList.length===0">找不到搜索结果</div>
         <div class="page">
           <el-pagination
             background
@@ -227,7 +229,8 @@ export default {
       judgement: [],
       law: [],
       protocol: [],
-      mediateCase: []
+      mediateCase: [],
+      prevDom: '' // 记录旧的dom节点
     }
   },
   computed: {
@@ -237,10 +240,12 @@ export default {
     }),
     keywordArr () {
       let arr = []
-      arr.push({
-        type: 'searchVal',
-        val: this.searchVal
-      })
+      if (this.searchVal !== '') {
+        arr.push({
+          type: 'searchVal',
+          val: this.searchVal
+        })
+      }
       if (this.caseType !== '') {
         arr.push({
           type: 'caseType',
@@ -289,25 +294,19 @@ export default {
     showDom (ev, val, id) {
       let _this = this
       // 选取节点
-      let node = ev.target.parentElement.nextElementSibling
+      let node = this.$refs[id][0]
       // 优化一下推荐列表接口的调用
       if (this.dissensionId === id) {
         if (this.state !== val) {
           this.state = val
           this.$nextTick(() => {
-            // 重置所有元素,这里可以用ref标记所有dom元素,就不要操作数组了,可以精确到每个元素
-            document.querySelectorAll('.hide_c').forEach((item) => {
-              item.style.height = '0px'
-            })
-            // 要把node的height变成实际值
-            let height = node.firstElementChild.offsetHeight
-            node.style.height = height + 'px'
+            node.style.height = node.firstElementChild.offsetHeight + 11 + 'px'
           })
         } else {
-          document.querySelectorAll('.hide_c').forEach((item) => {
-            item.style.height = '0px'
-          })
           this.state = ''
+          this.$nextTick(() => {
+            node.style.height = node.firstElementChild.offsetHeight + 11 + 'px'
+          })
         }
       } else {
         // 获取推荐列表
@@ -315,7 +314,6 @@ export default {
           id: id,
           detailType: _this.searchType
         }).then((res) => {
-          console.log(res)
           if (res.code === 1) {
             let data = res.data
             if (data.judgement && data.judgement.length >= 1) { _this.judgement = data.judgement.slice(0, 2) }
@@ -332,12 +330,11 @@ export default {
           _this.dissensionId = id
           // 更新dom后再修改高度
           _this.$nextTick(() => {
-            // 重置所有元素,这里可以用ref标记所有dom元素,就不要操作数组了,可以精确到每个元素
-            document.querySelectorAll('.hide_c').forEach((item) => {
-              item.style.height = '0px'
-              let height = node.firstElementChild.offsetHeight
-              node.style.height = height + 'px'
-            })
+            if (_this.prevDom !== '') {
+              _this.$refs[_this.prevDom][0].style.cssText = ''
+            }
+            node.style.height = node.firstElementChild.offsetHeight + 11 + 'px'
+            _this.prevDom = id
           })
         })
       }
@@ -353,7 +350,6 @@ export default {
     },
     // 树形插件点击事件
     handleNodeClick (data) {
-      console.log(data)
       this.caseType = data.realName
       this.caseTypeId = data.id
     },
@@ -379,7 +375,6 @@ export default {
       let _this = this
       return new Promise((resolve, reject) => {
         _this.searchListApi().then((res) => {
-          console.log(res)
           let data = res.data
           if (res.code === 1) {
             // 左侧案件分类树和关键词
@@ -418,7 +413,6 @@ export default {
       let start = (this.currentPage - 1) * this.pageSize
       let end = this.currentPage * this.pageSize
       this.renderList = this.primaryList.slice(start, end)
-      console.log(this.renderList)
       // 渲染的时候滚动条滚到最上面
       this.goTop()
     },
@@ -426,13 +420,14 @@ export default {
     goTop () {
       this.state = ''
       this.dissensionId = ''
-      // 分页的时候重置一下元素
-      document.querySelectorAll('.hide_c').forEach((item) => {
-        item.style.height = '0px'
+      // 重置一下元素
+      document.querySelectorAll('.otherInfo ').forEach((item) => {
+        item.style.cssText = ''
       })
-      // document.querySelectorAll('.otherInfo').forEach((item) => {
-      //   item.style.height = '45px'
-      // })
+      document.querySelectorAll('.hide_c ').forEach((item) => {
+        item.style.cssText = ''
+      })
+      this.prevDom = ''
       let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
       let index = 1
       let timer = setInterval(() => {
@@ -470,13 +465,20 @@ export default {
     // 删除关键词
     deleteKeyword (val) {
       if (val.type === 'searchVal') {
-
+        this.$store.commit('header/changeSearchVal', '')
       } else if (val.type === 'caseType') {
         this.caseType = ''
         this.caseTypeId = ''
       } else if (val.type === 'keyword') {
         this.keyword.splice(this.keyword.indexOf(val.name), 1)
       }
+    },
+    // 清空所有条件
+    resetAll () {
+      this.$store.commit('header/changeSearchVal', '')
+      this.caseType = ''
+      this.caseTypeId = ''
+      this.keyword = []
     },
     // 处理字符串变数组
     arrToString (val) {
@@ -489,6 +491,10 @@ export default {
   },
   mounted () {
     let _this = this
+    // 优化刷新网页的时候状态丢失
+    console.log(this.$route)
+    this.$store.commit('header/changeSearchType', _this.$route.params.type)
+    this.$store.commit('header/changeSearchVal', _this.$route.params.val)
     this.searchListInit().then(() => {
       _this.render()
     })

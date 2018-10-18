@@ -39,7 +39,7 @@
              <span class="des name" @click.stop="showPeople($event,agreementDetail.refereeName)">{{agreementDetail.refereeName|changeNull}}</span>
            </div>
            <div class="line">
-             <span class="label">旅行方式:</span>
+             <span class="label">履行方式:</span>
              <span class="des keyword" v-for="item in agreementDetail.fulfillway" :key="item">{{item}}</span>
            </div>
            <div class="line">
@@ -47,7 +47,7 @@
              <span class="des name" @click.stop="showMoney($event)">{{agreementDetail.agreementAmount + '元'}}</span>
            </div>
            <div class="line">
-             <span class="label">即时旅行:</span>
+             <span class="label">即时履行:</span>
              <span class="des">{{agreementDetail.performAmount + '元'}}</span>
            </div>
            <div class="line" style="height:auto">
@@ -97,15 +97,21 @@
       <div class="abs">{{people.position|changeNull}}</div>
     </div>
     <!-- 赔偿金额悬浮窗 -->
-    <div @click.stop class="moneyDetail" :style="{'top':top2,'left':left2}" v-show="showMoneyDetail">
+    <div @click.stop class="moneyDetail" :style="{'top':top2,'left':left2}" v-if="showMoneyDetail">
       <div class="title">协议金额分布</div>
-      <div class="echarts"></div>
+      <div class="echarts">
+        <g2-pie :padding="[20,160,20,20]" :legend-option="{'show':true,'position':'right-center'}" :width="507" :height="274" :id="'ring2'" :type="'ring'" :axis-name="{name:'平均协议金额', value:'金额数(元)'}"
+        :data="moneyArr"
+        :guide="guideVal"
+        >
+        </g2-pie>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { protocol, referee, recommendList } from '@/api/api.js'
+import { protocol, referee, recommendList, protocolAmount } from '@/api/api.js'
 import { Message } from 'element-ui'
 export default {
   data () {
@@ -145,7 +151,9 @@ export default {
       judgement: [],
       law: [],
       mediateCase: [],
-      protocol: []
+      protocol: [],
+      moneyArr: [],
+      guideVal: {name: '', value: ''}
     }
   },
   filters: {
@@ -160,6 +168,7 @@ export default {
   methods: {
     showPeople (ev, name) {
       let _this = this
+      _this.showMoneyDetail = false
       referee({'name': name}).then((res) => {
         if (res.code === 1) {
           _this.people = res.data
@@ -171,6 +180,7 @@ export default {
     },
     showMoney (ev) {
       let _this = this
+      _this.showPeopleDetail = false
       _this.left2 = ev.layerX + 15 + 'px'
       _this.top2 = ev.layerY + 5 + 'px'
       _this.showMoneyDetail = true
@@ -187,7 +197,7 @@ export default {
     protocol({'id': _this.$route.params.id}).then((res) => {
       console.log(res)
       if (res.code === 1) {
-        let {title, num, system, smallClass, dateaccepted, refereeDept, refereeName, dealAgreement, fulfillway, agreementAmount, performAmount, collectFlag, content, protocolId} = res.data
+        let {title, num, system, smallClass, dateaccepted, refereeDept, refereeName, dealAgreement, fulfillway, agreementAmount, performAmount, collectFlag, content, protocolId, classId} = res.data
         // 处理旅行方式
         fulfillway = fulfillway ? fulfillway.split(',') : []
         _this.agreementDetail = {title, num, system, smallClass, dateaccepted, refereeDept, refereeName, dealAgreement, fulfillway, agreementAmount, performAmount, protocolId}
@@ -198,6 +208,18 @@ export default {
           return item.name
         })
         _this.catalog.unshift('办案信息')
+        protocolAmount({'classId': classId}).then((res) => {
+          _this.moneyArr = res.data.map((item) => {
+            return {
+              name: item.name,
+              value: item.value
+            }
+          })
+          this.guideVal = {
+            name: '平均赔偿金额',
+            value: res.data[0].aveAmount + '元'
+          }
+        })
       } else {
         Message({
           message: res.message,
