@@ -65,7 +65,7 @@ export default new Router({
     },
     // 搜索列表页
     {
-      path: '/searchList',
+      path: '/searchList/:type/:val',
       name: 'searchList',
       component: () => import('./views/searchList.vue')
     }

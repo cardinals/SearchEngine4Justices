@@ -18,9 +18,11 @@
           <input @keyup.enter="goLogin" @focus="focusFn($event)" class="l-input" placeholder="请输入密码" type="password" v-model="login_password"/>
         </div>
         <div class="rem-password">
-          <input v-model="rem_password" class='checkbox' type="checkbox" checked>
-          <span class="span1">记住密码</span>
-          <span class="span2">忘记密码？</span>
+          <el-checkbox v-model="rem_password">记住密码</el-checkbox>
+          <!-- <input v-model="rem_password" class='checkbox' type="checkbox" checked>
+          <span class="span1">记住密码</span> -->
+          <!-- 忘记密码功能隐藏 -->
+          <span v-if="false" class="span2">忘记密码？</span>
         </div>
         <div class="common-input">
           <div class="common-button"  @click="goLogin">登录</div>
@@ -204,6 +206,15 @@ export default {
   }
 }
 </script>
+<style>
+.el-checkbox{
+  margin-left: 5px;
+}
+.el-checkbox__label{
+  color:#B4B4B4!important;
+}
+</style>
+
 <style lang="less" scoped>
   @import '~@/assets/css/login.less';
 </style>

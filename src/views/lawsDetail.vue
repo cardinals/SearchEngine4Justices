@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { law, recommendList } from '@/api/api.js'
+import { law } from '@/api/api.js'
 import { Message } from 'element-ui'
 export default {
   data () {
@@ -103,13 +103,14 @@ export default {
         console.log(res)
         let {enforceDate, lawName, timeLiness, publisher, lawContent, source, levelEffective, collectFlag, lawId} = res.data
         _this.lawDetail = {enforceDate, lawName, timeLiness, publisher, source, levelEffective, lawId}
-        _this.lawContent = lawContent
+        _this.lawContent = lawContent[0].name === null ? [] : lawContent
         _this.collectFlag = collectFlag
-        console.log(_this.lawDetail)
         // 处理下目录
-        _this.catalog = lawContent.map((item) => {
-          return item.name
-        })
+        if (lawContent.length > 0) {
+          _this.catalog = lawContent.map((item) => {
+            return item.name
+          })
+        }
         _this.catalog.unshift('基本信息')
       } else {
         Message({

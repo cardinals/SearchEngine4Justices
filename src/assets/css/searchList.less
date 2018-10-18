@@ -7,6 +7,7 @@
     display: block;
     box-sizing: border-box;
     position: relative;
+    border:1px solid rgba(238,238,238,1);
     &:nth-child(1){
       background: @block;
       padding:16px 96px 2px 102px;
@@ -96,6 +97,7 @@
       border-radius: 2px;
       padding:0 32px;
       background: #ffffff;
+      border:1px solid rgba(238,238,238,1);
       .classify{
         padding:18px 0;
         border-bottom: 1px dashed #E9E9E9;
@@ -157,6 +159,14 @@
           &:hover{
             overflow-y: scroll;
           }
+          .no-data{
+            text-align: center;
+            position: relative;
+            min-height: 60px;
+            text-align: center;
+            width: 100%;
+            line-height: 60px;
+          }
           .once{
             height: 26px;
             line-height: 26px;
@@ -189,6 +199,16 @@
     .list{
       float: right;
       width: 878px;
+      .nodataImg{
+        width: 100%;
+        height: 300px;
+        background: url('../images/searchList/nodata.png') center center no-repeat;
+        background-color: #ffffff;
+        font-size: @fontMiddle;
+        color: @black;
+        text-align: center;
+        line-height: 500px;
+      }
       .others{
         height: 42px;
         padding:10px 0;
@@ -248,6 +268,10 @@
         width: 100%;
         position: relative;
         margin-bottom: 28px;
+        border:1px solid rgba(238,238,238,1);
+        &:hover{
+          box-shadow:0px 0px 10px rgba(0,0,0,0.14);
+        }
         .main{
           width: 100%;
           position: relative;
@@ -256,10 +280,12 @@
           padding:29px 34px 31px 22px;
           .titles{
             display: block;
+            margin-right: 40px;
             span{
               font-size: @fontTitle;
               color: @black;
               cursor: pointer;
+              line-height: 24px;
               &:hover{             
                 color:@blue;
                 border-bottom: 1px solid @blue;         
@@ -356,9 +382,9 @@
           .hideBlock{
             width: 100%;
             background: white;
-            padding:0 20px;
             position: relative;
             .once_h{
+              padding:0 20px;
               display: block;
               padding-top: 20px;
               border-bottom: 1px dashed @graymore;
@@ -367,6 +393,24 @@
                 color:@black;
                 line-height: 22px;
                 margin-bottom: 12px;
+                padding-left: 26px;
+                position: relative;
+                cursor: pointer;
+                .rect{
+                  position: absolute;
+                  width:8px;
+                  height:8px;
+                  background:rgba(138,138,138,1);
+                  left: 5px;
+                  top: 50%;
+                  transform: translateY(-50%) rotate(45deg);
+                }
+                &:hover{
+                  color:@blue;
+                  .rect{
+                    background: @blue;
+                  }
+                }
               }
               .title2{
                 font-size: @fontMiddle;

@@ -50,6 +50,8 @@ export const mediateCaseDetail = (params) => get(`${baseUrl}/detail/mediateCase`
 export const referee = (params) => get(`${baseUrl}/detail/referee`, params)
 // 调解协议详情
 export const protocol = (params) => get(`${baseUrl}/detail/protocol`, params)
+// 调解协议金额分析
+export const protocolAmount = (params) => get(`${baseUrl}/mediate/protocolAmount`, params)
 // 裁判文书详情
 export const judgement = (params) => get(`${baseUrl}/detail/judgement`, params)
 // 法律条文详情
