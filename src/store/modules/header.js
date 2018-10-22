@@ -1,5 +1,6 @@
 // header公共组件状态库
 import { loginStatus, logout } from '@/api/api.js'
+import router from '@/router'
 
 const state = {
   // 是否登录状态
@@ -31,6 +32,7 @@ const actions = {
           commit('changeLogin', true)
         } else {
           commit('changeLogin', false)
+          router.push('/login')
         }
         resolve(res)
       }).catch((err) => {
