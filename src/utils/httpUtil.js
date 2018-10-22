@@ -2,7 +2,7 @@
  * @Author: wupeiwen javapeiwen2010@gmail.com
  * @Date: 2018-08-14 09:28:41
  * @Last Modified by: wupeiwen javapeiwen2010@gmail.com
- * @Last Modified time: 2018-09-18 11:02:03
+ * @Last Modified time: 2018-10-22 18:41:26
  */
 
 import axios from 'axios'
@@ -24,7 +24,9 @@ axios.defaults.timeout = 20000
 axios.interceptors.request.use(
   config => {
     // 打开加载遮罩
-    store.dispatch({ type: 'app/changeLoadingStatus', amount: true })
+    if (!(config.url === '/SearchCase/user/loginStatus')) {
+      store.dispatch({ type: 'app/changeLoadingStatus', amount: true })
+    }
     // 在http请求的header都加上token
     const token = store.state.app.token || window.localStorage.getItem('token')
     config.headers.token = token
@@ -39,7 +41,9 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   response => {
     // 关闭加载遮罩
-    store.dispatch({ type: 'app/changeLoadingStatus', amount: false })
+    if (!(response.config.url === '/SearchCase/user/loginStatus')) {
+      store.dispatch({ type: 'app/changeLoadingStatus', amount: false })
+    }
     // 未登录状态跳转登录页
     // if (response.data.code === 10) {
     //   Message({ type: 'info', message: '10 未登录！', duration: 5000 })
