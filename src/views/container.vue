@@ -60,5 +60,6 @@ export default {
   // 遮罩样式
   .el-loading-mask{
     position: fixed!important;
+    z-index: 9999!important;//设置层级为最高
   }
 </style>
