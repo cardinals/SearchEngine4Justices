@@ -4,7 +4,7 @@
       <div class="label">搜索条件:</div>
       <transition-group name="rotate">
         <div class="buttons" v-for="(item,index) in keywordArr" :key="index">
-          <span class="span">{{item.val}}</span>
+          <span class="span">{{item.val|cantOver}}</span>
           <span class="iconx" @click="deleteKeyword(item)">×</span>
         </div>
       </transition-group>
@@ -103,8 +103,9 @@
               <div class="line2" v-html="keywords(item.content)"></div>
             </div>
             <div class="types" v-if="searchType==='mediateCase'">调解案例</div>
-            <div class="types" v-if="searchType==='protocol'">调解协议书</div>
-            <div class="types" v-if="searchType==='judgement'">裁判文书</div>
+            <div class="types types2" v-if="searchType==='protocol'">调解协议书</div>
+            <div class="types types3" v-if="searchType==='judgement'">裁判文书</div>
+             <div class="types types4" v-if="searchType==='law'">法律法规</div>
           </div>
           <!-- 案件详情适配 -->
           <div class="otherInfo clearfix" v-if="searchType==='mediateCase'">
@@ -182,17 +183,18 @@
           </div>
           <!-- 法律条文适配 -->
           <div class="law_keyword clearfix" v-if="searchType==='law'&&item.keyword!==''">
-            <span class="keyword" v-for="(keyword,index) in arrToString(item.keyword)" :key="index">{{keyword}}</span>
+            <span class="keyword" v-for="(keyword,index) in arrToString(item.keyword)" :key="index" v-if="index<3">{{keyword}}</span>
           </div>
         </div>
         <div class="nodataImg" v-if="renderList.length===0">找不到搜索结果</div>
-        <div class="page">
+        <div v-if="renderList.length!==0" class="page">
           <el-pagination
             background
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :page-sizes="[5,10,20]"
             :page-size="pageSize"
+            :current-page ="currentPage"
             layout="sizes, prev, pager, next, jumper"
             :total="pageTotal">
           </el-pagination>
@@ -230,7 +232,9 @@ export default {
       law: [],
       protocol: [],
       mediateCase: [],
-      prevDom: '' // 记录旧的dom节点
+      prevDom: '', // 记录旧的dom节点
+      timeout: '', // 设置输入延迟
+      keyRex: []
     }
   },
   computed: {
@@ -267,18 +271,24 @@ export default {
     // 监控跟搜索有关的参数
     keywordArr: function (to, from) {
       let _this = this
-      this.searchListInit().then(() => {
-        _this.render()
-      })
+      this.currentPage = 1
+      clearTimeout(_this.timeout)
+      _this.timeout = setTimeout(function () {
+        _this.searchListInit().then(() => {
+          _this.render()
+        })
+      }, 1000)
     },
     sortFlag: function (to, from) {
       let _this = this
+      this.currentPage = 1
       this.searchListInit().then(() => {
         _this.render()
       })
     },
     searchType: function (to, from) {
       let _this = this
+      this.currentPage = 1
       this.searchListInit().then(() => {
         _this.render()
       })
@@ -287,6 +297,10 @@ export default {
   filters: {
     changeNull (val) {
       return !val ? '暂无信息' : val
+    },
+    // 限定字数不能超过10
+    cantOver (val) {
+      return val.length > 11 ? val.slice(0, 10) + '...' : val
     }
   },
   methods: {
@@ -398,6 +412,8 @@ export default {
             _this.pageTotal = data.result.length
             // 记录原始数据
             _this.primaryList = data.result
+            // 记录关键词
+            _this.keyRex = data.queryKeyword ? data.queryKeyword.split('|') : []
             resolve()
           } else {
             Message({
@@ -440,7 +456,16 @@ export default {
     keywords (val) {
       // 判断val是否为undefined，解决v-if机制问题，未查明原因
       if (val) {
-        let keyWords = new RegExp('([' + this.searchVal + ']{2,})', 'gi')
+        // let keyWords = new RegExp('([' + this.searchVal + ']{2,})', 'gi')
+        let str = ''
+        this.keyRex.forEach((item, index) => {
+          if (index !== 0) {
+            str += '|[' + item + ']{2,}'
+          } else {
+            str += '[' + item + ']{2,}'
+          }
+        })
+        let keyWords = new RegExp('(' + str + ')', 'gi')
         let newval = val.replace(/\\n/g, '')
         newval = newval.length > 110 ? newval.substring(0, 110) + '...' : newval
         return newval.replace(keyWords, `<em style="color:#F74D4E;font-size:inherit">$1</em>`)
@@ -492,7 +517,6 @@ export default {
   mounted () {
     let _this = this
     // 优化刷新网页的时候状态丢失
-    console.log(this.$route)
     this.$store.commit('header/changeSearchType', _this.$route.params.type)
     this.$store.commit('header/changeSearchVal', _this.$route.params.val)
     this.searchListInit().then(() => {
