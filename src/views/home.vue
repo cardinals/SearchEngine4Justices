@@ -303,7 +303,7 @@ export default {
     })
     // 添加滚轮事件添加收藏列表
     window.addEventListener('mousewheel', function (ev) {
-      if ((ev.wheelDelta < 0 || ev.detail < 0) && _this.showWhich === 'collection' && _this.ifLogin && _this.flag) {
+      if ((ev.wheelDelta < 0 || ev.detail < 0) && _this.showWhich === 'collection' && _this.ifLogin && _this.flag && _this.$route.name === '首页') {
         _this.pages += 1
         _this.collectionListInit(_this.pages).then((res) => {
           if (res.code === 1) {
