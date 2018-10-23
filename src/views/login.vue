@@ -206,9 +206,17 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
+    },
+    // 是否已经登录
+    isLogined () {
+      if (this.$store.state.header.ifLogin) {
+        this.$router.push('/home')
+      }
     }
   },
   mounted () {
+    // 是否已经登录
+    this.isLogined()
     // 获取验证码
     this.getYzm()
   }
