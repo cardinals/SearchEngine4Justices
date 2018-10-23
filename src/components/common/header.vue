@@ -34,6 +34,7 @@
             @select="handleSelect"
             @keydown.enter.native = "goSearch"
             :trigger-on-focus="false"
+            max=20
           >
           <template slot-scope="props">
             <div class="name">{{ props.item.text }}</div>
@@ -81,7 +82,7 @@ export default {
         label: '裁判文书'
       }, {
         value: 'law',
-        label: '法律条文'
+        label: '法律法规'
       }]
     }
   },
@@ -171,9 +172,9 @@ export default {
       let _this = this
       this.changeSearchVal(_this.searchVal)
       this.changeSearchType(_this.searchType)
-      if (this.$route.name !== 'searchList') {
-        this.$router.push('/searchList/' + _this.searchType + '/' + _this.searchVal)
-      }
+      // if (this.$route.name !== 'searchList') {
+      this.$router.push('/searchList/' + _this.searchType + '/' + _this.searchVal)
+      // }
     }
   },
   mounted () {
