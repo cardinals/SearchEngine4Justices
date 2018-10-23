@@ -2,7 +2,7 @@
   <!-- 调解协议详情 -->
   <div class="mediationAD clearfix">
     <!-- 锚点组件 -->
-    <anchor-point :catalog="catalog" :ids="agreementDetail.protocolId" :subtype="agreementDetail.smallClass" :title="agreementDetail.title" detailType="protocol" :collectFlag="collectFlag"  ></anchor-point>
+    <anchor-point :catalog="catalog" :ids="agreementDetail.protocolId" :subtype="agreementDetail.classId" :title="agreementDetail.title" detailType="protocol" :collectFlag="collectFlag"  ></anchor-point>
     <!-- 内容区 -->
     <div class="mainContent">
       <div class="titles">
@@ -32,7 +32,7 @@
            </div>
            <div class="line">
              <span class="label">调解单位:</span>
-             <span class="des">{{agreementDetail.refereeDept|changeNull}}</span>
+             <span class="des">{{agreementDetail.refereeDept|changeNull}}<i style="margin-left:4px" class="icon el-icon-location"></i></span>
            </div>
            <div class="line">
              <span class="label">调解员:</span>
@@ -43,8 +43,9 @@
              <span class="des keyword" v-for="item in agreementDetail.fulfillway" :key="item">{{item}}</span>
            </div>
            <div class="line">
-             <span class="label">协议金额:</span>
-             <span class="des name" @click.stop="showMoney($event)">{{agreementDetail.agreementAmount + '元'}}</span>
+             <span style="float:left" class="label">协议金额:</span>
+             <span style="float:left;cursor:default" class="des name">{{agreementDetail.agreementAmount + '元'}}</span>
+             <span class="img" @click.stop="showMoney($event)"></span>
            </div>
            <div class="line">
              <span class="label">即时履行:</span>
@@ -100,7 +101,7 @@
     <div @click.stop class="moneyDetail" :style="{'top':top2,'left':left2}" v-if="showMoneyDetail">
       <div class="title">协议金额分布</div>
       <div class="echarts">
-        <g2-pie :padding="[20,160,20,20]" :legend-option="{'show':true,'position':'right-center'}" :width="507" :height="274" :id="'ring2'" :type="'ring'" :axis-name="{name:'平均协议金额', value:'金额数(元)'}"
+        <g2-pie :color-map="['#5AAFFE','#36CBCB','#FAD337','#4DCB73','#F2637B','#975FE4']" :padding="[20,160,20,20]" :legend-option="{'show':true,'position':'right-center'}" :width="507" :height="274" :id="'ring2'" :type="'ring'" :axis-name="{name:'平均协议金额', value:'金额数(元)'}"
         :data="moneyArr"
         :guide="guideVal"
         >
@@ -124,10 +125,11 @@ export default {
         refereeDept: '',
         refereeName: '',
         dealAgreement: '',
-        fulfillway: '',
+        fulfillway: [],
         agreementAmount: 0,
         performAmount: 0,
-        protocolId: ''
+        protocolId: '',
+        classId: ''
       },
       collectFlag: 0,
       content: [],
@@ -199,8 +201,8 @@ export default {
       if (res.code === 1) {
         let {title, num, system, smallClass, dateaccepted, refereeDept, refereeName, dealAgreement, fulfillway, agreementAmount, performAmount, collectFlag, content, protocolId, classId} = res.data
         // 处理旅行方式
-        fulfillway = fulfillway ? fulfillway.split(',') : []
-        _this.agreementDetail = {title, num, system, smallClass, dateaccepted, refereeDept, refereeName, dealAgreement, fulfillway, agreementAmount, performAmount, protocolId}
+        fulfillway = fulfillway ? fulfillway.split(',') : ['暂无信息']
+        _this.agreementDetail = {title, num, system, smallClass, dateaccepted, refereeDept, refereeName, dealAgreement, fulfillway, agreementAmount, performAmount, protocolId, classId}
         _this.collectFlag = collectFlag
         _this.content = content
         // 处理下目录

@@ -176,7 +176,15 @@ export default {
       if (indexChoose !== -1) {
         this.chooseArr.splice(indexChoose, 1)
       } else {
-        this.chooseArr.push(item.type)
+        if (this.chooseArr.length >= 5) {
+          Message({
+            message: '最多选择五个感兴趣的类型',
+            type: 'warning'
+          })
+          this.chooseArr.push(item.type)
+        } else {
+          this.chooseArr.push(item.type)
+        }
       }
     },
     // 首次登陆确定按钮

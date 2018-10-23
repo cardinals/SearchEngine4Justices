@@ -1,7 +1,7 @@
 <template>
   <!-- 裁判文书详情 -->
   <div class="judgmentDetail clearfix">
-    <anchor-point :catalog="catalog" :ids="judgementDetail.caseId" :subtype="judgementDetail.smallClass" :title="judgementDetail.title" detailType="judgement" :collectFlag="collectFlag"  ></anchor-point>
+    <anchor-point :catalog="catalog" :ids="judgementDetail.caseId" :subtype="judgementDetail.classId" :title="judgementDetail.title" detailType="judgement" :collectFlag="collectFlag"  ></anchor-point>
     <div class="mainContent">
       <div class="titles">
         <div class="real_title">{{judgementDetail.title}}</div>
@@ -30,7 +30,7 @@
            </div>
            <div class="line">
              <span class="label">审理法院:</span>
-             <span class="des">{{judgementDetail.courtName}}</span>
+             <span class="des">{{judgementDetail.courtName}}<i style="margin-left:4px" class="icon el-icon-location"></i></span>
            </div>
            <div class="line">
              <span class="label">关键词:</span>
@@ -96,10 +96,10 @@ export default {
     judgement({'id': _this.$route.params.id}).then((res) => {
       // 解构赋值
       if (res.code === 1) {
-        let {title, system, smallClass, courtName, keyword, lawFltw, trialDate, collectFlag, content, caseId} = res.data
+        let {title, system, smallClass, courtName, keyword, lawFltw, trialDate, collectFlag, content, caseId, classId} = res.data
         console.log(res)
         keyword = keyword.split('|')
-        _this.judgementDetail = {title, system, smallClass, keyword, courtName, lawFltw, trialDate, caseId}
+        _this.judgementDetail = {title, system, smallClass, keyword, courtName, lawFltw, trialDate, caseId, classId}
         _this.collectFlag = collectFlag
         _this.content = content
         // 处理下目录

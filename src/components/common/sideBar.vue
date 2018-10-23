@@ -17,9 +17,9 @@
         </div>
     </div>
     <div v-if="model==='details'" class="ul details">
-        <div class="li" v-if="index<5" v-for="(item,index) in data" :key="index" :style="{height:item.name.length > 19 ? '39px' : '19px'}">
-          <span v-if="item.name.length<=40" @click="showDetail($event)" class="name">{{item.name|subText}}</span>
-          <el-tooltip v-if="item.name.length>40" class="item" effect="dark" :content="item.name" placement="right">
+        <div lock='false' class="li" v-if="index<5" v-for="(item,index) in data" :key="index" :style="{height:item.name.length > 19 ? '39px' : '19px'}">
+          <span v-if="item.name.length<=36" @click="showDetail($event)" class="name">{{item.name|subText}}</span>
+          <el-tooltip v-if="item.name.length>36" class="item" effect="dark" :content="item.name" placement="right">
             <span @click="showDetail($event)" class="name">{{item.name|subText}}</span>
           </el-tooltip>
           <span class="content">{{item.content|deleteEnter}}</span>
@@ -47,12 +47,13 @@ export default {
   data () {
     return {
       height: '46px',
-      ifShow: false
+      ifShow: false,
+      lock: false
     }
   },
   filters: {
     subText (val) {
-      return val.length > 40 ? val.substring(0, 40) + '...' : val
+      return val.length > 38 ? val.substring(0, 37) + '...' : val
     },
     deleteEnter (val) {
       return val.replace(/\\n/g, '')
@@ -72,19 +73,25 @@ export default {
     },
     // 点击展开
     showDetail (ev) {
+      let _this = this
       let node = ev.target.nextElementSibling
       let height = node.offsetHeight + ev.target.offsetHeight
       let container = ev.target.parentNode.parentNode.parentNode
-      if (parseInt(ev.target.offsetHeight) === parseInt(ev.target.parentNode.offsetHeight)) {
-        ev.target.parentNode.style.height = height + 'px'
-        this.height = container.offsetHeight + node.offsetHeight + 'px'
-        node.nextElementSibling.nextElementSibling.className = 'triangle show'
-        node.parentNode.className = 'li gray'
-      } else {
-        ev.target.parentNode.style.height = height - node.offsetHeight + 'px'
-        this.height = container.offsetHeight - node.offsetHeight + 'px'
-        node.nextElementSibling.nextElementSibling.className = 'triangle unshow'
-        node.parentNode.className = 'li white'
+      let parent = ev.target.parentNode
+      parent.addEventListener('transitionend', _this.lockn, false)
+      if (_this.lock === false) {
+        _this.lock = true
+        if (parseInt(ev.target.offsetHeight) === parseInt(ev.target.parentNode.offsetHeight)) {
+          ev.target.parentNode.style.height = height + 'px'
+          this.height = container.offsetHeight + node.offsetHeight + 'px'
+          node.nextElementSibling.nextElementSibling.className = 'triangle show'
+          node.parentNode.className = 'li gray'
+        } else {
+          ev.target.parentNode.style.height = height - node.offsetHeight + 'px'
+          this.height = container.offsetHeight - node.offsetHeight + 'px'
+          node.nextElementSibling.nextElementSibling.className = 'triangle unshow'
+          node.parentNode.className = 'li white'
+        }
       }
     },
     // 第一种 跳转链接
@@ -95,6 +102,12 @@ export default {
       if (this.url === this.$route.name) {
         window.location.reload()
       }
+    },
+    // 第二种 过渡动画上锁,本来给父节点上锁，后来发现不行，需要全局上锁
+    lockn (ev) {
+      let _this = this
+      _this.lock = false
+      ev.target.removeEventListener('transitionend', _this.lockn)
     }
   },
   mounted () {

@@ -8,7 +8,7 @@
       <div class="titles">
         <div class="real_title">{{lawDetail.lawName}}</div>
         <div class="from">【案例来源】 {{lawDetail.source}}<i class="icon"></i></div>
-        <div class="types">调解案例</div>
+        <div class="types">法律法规</div>
       </div>
        <div class="contents" id="基本信息">
          <div class="title">
@@ -20,7 +20,7 @@
          <div class="content">
            <div class="line">
              <span class="label">时效性:</span>
-             <span class="des name">{{lawDetail.timeLiness}}</span>
+             <span class="des keyword">{{lawDetail.timeLiness}}</span>
            </div>
            <div class="line">
              <span class="label">实行时间:</span>
@@ -28,7 +28,7 @@
            </div>
            <div class="line">
              <span class="label">发布机关:</span>
-             <span class="des">{{lawDetail.publisher}}</span>
+             <span class="des">{{lawDetail.publisher}}<i style="margin-left:4px" class="icon el-icon-location"></i></span>
            </div>
          </div>
         </div>
@@ -39,7 +39,7 @@
         </div>
         <div class="content">
           <div class="stage" v-for="(item2,index2) in item.value" :key="index2">
-            <p :style="{'text-indent':item3[0]==='第'&&item2[item3.length-1]==='条'?'1em':'2em'}" v-for="(item3,index3) in $options.filters.changeEnter(item2)" :key="index3">{{item3}}</p>
+            <p :style="{'text-indent':item3[0]==='第'&&item2[item3.length-1]==='条'?'0em':'2em'}" v-for="(item3,index3) in $options.filters.changeEnter(item2)" :key="index3">{{item3}}</p>
           </div>
         </div>
       </div>

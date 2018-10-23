@@ -64,8 +64,8 @@ export default {
     display: flex;
     min-height: 500px;
     height: 100%;
-    background: #f0f2f5;
-    padding-top: 10% !important;
+    background: #f0f0f0;
+    padding-top: 20% !important;
     .left {
       flex: 0 0 50%;
       width: 50%;
@@ -81,18 +81,18 @@ export default {
         background-size: contain;
       }
       .error403 {
-       background-image:url(~@/assets/images/error/pic-error-403.svg);
+       background-image:url(~@/assets/images/error/403.png);
       }
       .error404 {
-       background-image:url(~@/assets/images/error/pic-error-404.svg);
+       background-image:url(~@/assets/images/error/404.png);
       }
       .error500 {
-       background-image:url(~@/assets/images/error/pic-error-500.svg);
+       background-image:url(~@/assets/images/error/500.png);
       }
     }
     .right {
       flex: auto;
-      margin-top: 24px;
+      margin-top: 55px;
       h1 {
         display: block;
         color: #434e59;

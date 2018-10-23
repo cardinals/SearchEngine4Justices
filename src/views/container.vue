@@ -9,12 +9,12 @@
   <!-- 外层容器，当子元素中包含 <el-header> 或 <el-footer> 时，全部子元素会垂直上下排列，否则会水平左右排列。 -->
   <div class="container" v-loading="$store.state.app.isShowLoading" :style="{'background':$route.fullPath ==='/home'?'white':'#f0f0f0','padding-bottom':$route.fullPath==='/home'?'58px':'154px'}">
     <!-- 顶栏容器 -->
-    <header-com v-if="$route.fullPath!=='/login'"></header-com>
+    <header-com v-if="$route.fullPath!=='/login'&&$route.name!=='错误页'"></header-com>
     <div class="body" :style="{'width':$route.fullPath ==='/home'?'100%':'1200px'}">
       <!-- 路由区域 -->
       <router-view class="router"></router-view>
     </div>
-    <footer-com></footer-com>
+    <footer-com  v-if="$route.name!=='错误页'"></footer-com>
     <go-top></go-top>
   </div>
 </template>
@@ -60,5 +60,6 @@ export default {
   // 遮罩样式
   .el-loading-mask{
     position: fixed!important;
+    z-index: 9999!important;//设置层级为最高
   }
 </style>
