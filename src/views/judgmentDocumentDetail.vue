@@ -30,7 +30,7 @@
            </div>
            <div class="line">
              <span class="label">审理法院:</span>
-             <span class="des">{{judgementDetail.courtName}}</span>
+             <span class="des">{{judgementDetail.courtName}}<i style="margin-left:4px" class="icon el-icon-location"></i></span>
            </div>
            <div class="line">
              <span class="label">关键词:</span>

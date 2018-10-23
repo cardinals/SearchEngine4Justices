@@ -27,12 +27,12 @@
              <span class="des">{{caseDetail.transactDate|changeNull}}</span>
            </div>
            <div class="line">
-             <span class="label">调节单位:</span>
-             <span class="des">{{caseDetail.refereeDept|changeNull}}</span>
+             <span class="label">调解单位:</span>
+             <span class="des">{{caseDetail.refereeDept|changeNull}}<i style="margin-left:4px" class="icon el-icon-location"></i></span>
            </div>
            <div class="line">
              <span class="label">调解员:</span>
-             <span class="des name" @click.stop="showPeople($event,caseDetail.refereed)">{{caseDetail.refereed|changeNull}}</span>
+             <span v-for ="item in caseDetail.refereed" :key="item" class="des name" @click.stop="showPeople($event,item)">{{item|changeNull}}</span>
            </div>
            <div class="line">
              <span class="label">关键词:</span>
@@ -161,6 +161,7 @@ export default {
         let {title, system, smallClass, keyword, transactDate, refereeDept, refereed, collectFlag, content, dissensionId} = res.data
         // 处理下keyword
         keyword = keyword.split('|')
+        refereed = refereed ? refereed.split('|') : [null]
         _this.caseDetail = {title, system, smallClass, keyword, transactDate, refereeDept, refereed, dissensionId}
         _this.collectFlag = collectFlag
         _this.content = content
