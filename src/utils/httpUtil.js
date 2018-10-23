@@ -24,7 +24,7 @@ axios.defaults.timeout = 20000
 axios.interceptors.request.use(
   config => {
     // 打开加载遮罩
-    if (!(config.url === '/SearchCase/user/loginStatus')) {
+    if (!(config.url === '/SearchCase/user/loginStatus') && !(config.url === '/SearchCase/suggest/hanZi') && !(config.url === '/SearchCase/suggest/pinYin')) {
       store.dispatch({ type: 'app/changeLoadingStatus', amount: true })
     }
     // 在http请求的header都加上token
@@ -41,7 +41,7 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   response => {
     // 关闭加载遮罩
-    if (!(response.config.url === '/SearchCase/user/loginStatus')) {
+    if (!(response.config.url === '/SearchCase/user/loginStatus') && !(response.config.url === '/SearchCase/suggest/hanZi') && !(response.config.url === '/SearchCase/suggest/pinYin')) {
       store.dispatch({ type: 'app/changeLoadingStatus', amount: false })
     }
     // 未登录状态跳转登录页
