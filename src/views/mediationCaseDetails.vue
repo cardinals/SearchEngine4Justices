@@ -2,7 +2,7 @@
   <!-- 调解案件详情 -->
   <div class="mediationCD clearfix">
     <!-- 锚点组件 -->
-    <anchor-point :catalog="catalog" :ids="caseDetail.dissensionId" :subtype="caseDetail.smallClass" :title="caseDetail.title" detailType="mediateCase" :collectFlag="collectFlag"  ></anchor-point>
+    <anchor-point :catalog="catalog" :ids="caseDetail.dissensionId" :subtype="caseDetail.smallClassId" :title="caseDetail.title" detailType="mediateCase" :collectFlag="collectFlag"  ></anchor-point>
     <!-- 内容区 -->
     <div class="mainContent">
       <div class="titles">
@@ -97,7 +97,8 @@ export default {
         transactDate: '',
         refereeDept: '',
         refereed: '',
-        dissension_id: ''
+        dissension_id: '',
+        smallClassId: ''
       },
       catalog: [],
       collectFlag: 0,
@@ -158,11 +159,11 @@ export default {
     mediateCaseDetail({'id': _this.$route.params.id}).then((res) => {
       // 解构赋值
       if (res.code === 1) {
-        let {title, system, smallClass, keyword, transactDate, refereeDept, refereed, collectFlag, content, dissensionId} = res.data
+        let {title, system, smallClass, keyword, transactDate, refereeDept, refereed, collectFlag, content, dissensionId, smallClassId} = res.data
         // 处理下keyword
         keyword = keyword.split('|')
         refereed = refereed ? refereed.split('|') : [null]
-        _this.caseDetail = {title, system, smallClass, keyword, transactDate, refereeDept, refereed, dissensionId}
+        _this.caseDetail = {title, system, smallClass, keyword, transactDate, refereeDept, refereed, dissensionId, smallClassId}
         _this.collectFlag = collectFlag
         _this.content = content
         // 处理下目录

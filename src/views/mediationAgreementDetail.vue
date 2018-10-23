@@ -2,7 +2,7 @@
   <!-- 调解协议详情 -->
   <div class="mediationAD clearfix">
     <!-- 锚点组件 -->
-    <anchor-point :catalog="catalog" :ids="agreementDetail.protocolId" :subtype="agreementDetail.smallClass" :title="agreementDetail.title" detailType="protocol" :collectFlag="collectFlag"  ></anchor-point>
+    <anchor-point :catalog="catalog" :ids="agreementDetail.protocolId" :subtype="agreementDetail.classId" :title="agreementDetail.title" detailType="protocol" :collectFlag="collectFlag"  ></anchor-point>
     <!-- 内容区 -->
     <div class="mainContent">
       <div class="titles">
@@ -128,7 +128,8 @@ export default {
         fulfillway: [],
         agreementAmount: 0,
         performAmount: 0,
-        protocolId: ''
+        protocolId: '',
+        classId: ''
       },
       collectFlag: 0,
       content: [],
@@ -201,7 +202,7 @@ export default {
         let {title, num, system, smallClass, dateaccepted, refereeDept, refereeName, dealAgreement, fulfillway, agreementAmount, performAmount, collectFlag, content, protocolId, classId} = res.data
         // 处理旅行方式
         fulfillway = fulfillway ? fulfillway.split(',') : ['暂无信息']
-        _this.agreementDetail = {title, num, system, smallClass, dateaccepted, refereeDept, refereeName, dealAgreement, fulfillway, agreementAmount, performAmount, protocolId}
+        _this.agreementDetail = {title, num, system, smallClass, dateaccepted, refereeDept, refereeName, dealAgreement, fulfillway, agreementAmount, performAmount, protocolId, classId}
         _this.collectFlag = collectFlag
         _this.content = content
         // 处理下目录
