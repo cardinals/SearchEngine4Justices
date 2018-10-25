@@ -172,9 +172,9 @@ export default {
       let _this = this
       this.changeSearchVal(_this.searchVal)
       this.changeSearchType(_this.searchType)
-      // if (this.$route.name !== 'searchList') {
-      this.$router.push('/searchList/' + _this.searchType + '/' + _this.searchVal)
-      // }
+      if (this.searchVal !== '') {
+        this.$router.push('/searchList/' + _this.searchType + '/' + _this.searchVal)
+      }
     }
   },
   mounted () {

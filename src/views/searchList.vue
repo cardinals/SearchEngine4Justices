@@ -413,7 +413,7 @@ export default {
             // 记录原始数据
             _this.primaryList = data.result
             // 记录关键词
-            _this.keyRex = data.queryKeyword ? data.queryKeyword.split('|') : []
+            _this.keyRex = data.queryKeyword
             resolve()
           } else {
             Message({
