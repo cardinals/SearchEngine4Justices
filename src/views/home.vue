@@ -250,7 +250,14 @@ export default {
       let _this = this
       this.changeSearchVal(_this.search)
       this.changeSearchType(_this.searchType)
-      this.$router.push('/searchList/' + _this.searchType + '/' + _this.search)
+      if (this.search !== '') {
+        this.$router.push('/searchList/' + _this.searchType + '/' + _this.search)
+      } else {
+        Message({
+          message: '请输入搜索信息',
+          type: 'warning'
+        })
+      }
     }
   },
   mounted () {
