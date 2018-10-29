@@ -460,9 +460,9 @@ export default {
         let str = ''
         this.keyRex.forEach((item, index) => {
           if (index !== 0) {
-            str += '|[' + item + ']{2,}'
+            str += '|' + item
           } else {
-            str += '[' + item + ']{2,}'
+            str += item
           }
         })
         let keyWords = new RegExp('(' + str + ')', 'gi')
