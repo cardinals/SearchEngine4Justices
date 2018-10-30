@@ -205,7 +205,7 @@
 </template>
 
 <script>
-import { searchList, recommendList } from '@/api/api.js'
+import { searchList, recommendList, log } from '@/api/api.js'
 import { mapState } from 'vuex'
 import { Message } from 'element-ui'
 export default {
@@ -353,14 +353,28 @@ export default {
         })
       }
     },
+    // 提交日志
+    commitLog () {
+      log(({
+        query: this.searchVal,
+        queryType: this.searchType,
+        caseType: this.caseTypeId,
+        keyword: this.keyword,
+        sortFlag: this.sortFlag,
+        pageSize: this.pageSize,
+        currentPage: this.currentPage
+      }))
+    },
     // 分页插件事件
     handleSizeChange (val) {
       this.pageSize = val
       this.render()
+      this.commitLog()
     },
     handleCurrentChange (val) {
       this.currentPage = val
       this.render()
+      this.commitLog()
     },
     // 树形插件点击事件
     handleNodeClick (data) {
@@ -370,6 +384,7 @@ export default {
     // 搜索接口
     searchListApi () {
       let _this = this
+      this.commitLog()
       return new Promise((resolve, reject) => {
         searchList({
           query: _this.searchVal,

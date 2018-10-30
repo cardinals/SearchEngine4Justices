@@ -2,7 +2,7 @@
  * @Author: wupeiwen javapeiwen2010@gmail.com
  * @Date: 2018-09-18 10:19:23
  * @Last Modified by: wupeiwen javapeiwen2010@gmail.com
- * @Last Modified time: 2018-09-18 11:03:36
+ * @Last Modified time: 2018-10-30 11:00:48
  */
 //  引入httpUtil
 import {get, post} from '@/utils/httpUtil'
@@ -60,3 +60,5 @@ export const law = (params) => get(`${baseUrl}/detail/law`, params)
 export const recommendList = (params) => get(`${baseUrl}/mediate/recommendList`, params)
 // 搜索列表页
 export const searchList = (params) => post(`${baseUrl}/mediate/list`, params)
+// 搜索列表页日志记录接口
+export const log = (params) => post(`${baseUrl}/mediate/log`, params)
