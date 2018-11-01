@@ -51,10 +51,6 @@
              <span class="label">即时履行:</span>
              <span class="des">{{agreementDetail.performAmount + '元'}}</span>
            </div>
-           <div class="line" style="height:auto">
-             <span class="label">协议内容:</span>
-             <span class="des">{{agreementDetail.dealAgreement|changeNull}}</span>
-           </div>
          </div>
       </div>
       <div class="contents" v-for="item in content" :key="item.name" :id="item.name">
