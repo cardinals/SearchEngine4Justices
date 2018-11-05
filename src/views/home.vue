@@ -23,7 +23,7 @@
             class="inline-input"
             v-model="search"
             :fetch-suggestions="querySearch"
-            placeholder="请输入关键词或案件详情"
+            placeholder="请输入关键词"
             @select="handleSelect"
             :trigger-on-focus="false"
             @keydown.enter.native = "goSearch"
