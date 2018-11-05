@@ -6,7 +6,7 @@
       <div class="login-nav">
         <span class="nav-span" :class="{'active':loginFlag==true,'unactive':loginFlag==false}" @click="loginFlag=true">登录</span>
         <!-- 隐藏注册功能 -->
-        <span class="nav-span" :class="{'unactive':loginFlag==true,'active':loginFlag==false}" @click="loginFlag=false"  v-if="falise">注册</span>
+        <span class="nav-span" :class="{'unactive':loginFlag==true,'active':loginFlag==false}" @click="loginFlag=false"  v-if="false">注册</span>
       </div>
       <!-- 登录 -->
       <div class="common-cantainer" v-show="loginFlag==true">
@@ -29,7 +29,7 @@
           <div class="common-button"  @click="goLogin">登录</div>
         </div>
           <!-- 隐藏跳过登录 -->
-        <div class="jump" v-if="falise" @click="$router.push('/home')">跳过登录，直接访问 →</div>
+        <div class="jump" v-if="false" @click="$router.push('/home')">跳过登录，直接访问 →</div>
       </div>
       <!-- 注册 -->
       <div class="common-cantainer" v-show="loginFlag==false">
