@@ -74,7 +74,7 @@
     </div>
     <!-- 人物详情悬浮窗  这里阻止下事件冒泡-->
     <div @click.stop class="peopleDetail" :class="[people.gende==='女'?'nv':'nan']" :style="{'top':top,'left':left}" v-show="showPeopleDetail">
-      <div class="line1">{{people.refereeName|changeNull}}</div>
+      <div class="line1" :class="[people.gende==='女'?'red':'blue']">{{people.refereeName|changeNull}}</div>
       <div class="line2">
         <span class="span">{{people.gender|changeNull}}</span>
         <i class="border"></i>
