@@ -2,7 +2,7 @@
  * @Author: wupeiwen javapeiwen2010@gmail.com
  * @Date: 2018-09-18 10:01:31
  * @Last Modified by: wupeiwen javapeiwen2010@gmail.com
- * @Last Modified time: 2018-09-18 11:00:34
+ * @Last Modified time: 2018-11-05 18:19:37
  */
 
 <template>
@@ -30,7 +30,7 @@
             class="inline-input"
             v-model="searchVal"
             :fetch-suggestions="querySearch"
-            placeholder="请输入关键词或案件详情"
+            placeholder="请输入关键词"
             @select="handleSelect"
             @keydown.enter.native = "goSearch"
             :trigger-on-focus="false"
@@ -50,11 +50,14 @@
         <div class="menu clearfix" v-if="ifLogin">
           <el-dropdown @command="goLogin" trigger="click">
             <span class="el-dropdown-link">
-              {{ifLogin?'已登录':'未登录'}}
+              <el-tooltip effect="light" placement="bottom-end">
+              <div slot="content">{{userName}}</div>
+              <span>已登录</span>
+              </el-tooltip>
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item :command='ifLogin'>{{ifLogin?'注销':'登录'}}</el-dropdown-item>
+              <el-dropdown-item :command='ifLogin'>{{'注销'}}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -83,7 +86,9 @@ export default {
       }, {
         value: 'law',
         label: '法律法规'
-      }]
+      }],
+      // 登录用户名
+      userName: localStorage.getItem('tattusername')
     }
   },
   computed: {

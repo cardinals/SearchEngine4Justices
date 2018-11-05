@@ -249,6 +249,9 @@ export default {
           type: 'searchVal',
           val: this.searchVal
         })
+      } else {
+        // 如果searchVal为空，清空所有搜索条件
+        this.resetAll()
       }
       if (this.caseType !== '') {
         arr.push({

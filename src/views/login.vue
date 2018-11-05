@@ -152,8 +152,6 @@ export default {
           })
         }
         // 清空注册信息,重新获取验证码
-        _this.registor_username = ''
-        _this.registor_password = ''
         _this.registor_yzm = ''
         _this.getYzm()
       }).catch((err) => {
