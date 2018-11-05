@@ -97,7 +97,7 @@
     <div @click.stop class="moneyDetail" :style="{'top':top2,'left':left2}" v-if="showMoneyDetail">
       <div class="title">协议金额分布</div>
       <div class="echarts">
-        <g2-pie :color-map="['#5AAFFE','#36CBCB','#FAD337','#4DCB73','#F2637B','#975FE4']" :padding="[20,160,20,20]" :legend-option="{'show':true,'position':'right-center'}" :width="507" :height="274" :id="'ring2'" :type="'ring'" :axis-name="{name:'平均协议金额', value:'金额数(元)'}"
+        <g2-pie :color-map="['#5AAFFE','#36CBCB','#FAD337','#4DCB73','#F2637B','#975FE4']" :padding="[20,160,20,20]" :legend-option="{'show':true,'position':'right-center'}" :width="507" :height="274" :id="'ring2'" :type="'ring'" :axis-name="{name:'金额区间(元)', value:'数量(件)'}"
         :data="moneyArr"
         :guide="guideVal"
         >
