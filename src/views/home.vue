@@ -2,7 +2,7 @@
  * @Author: wupeiwen javapeiwen2010@gmail.com
  * @Date: 2018-08-27 14:03:38
  * @Last Modified by: wupeiwen javapeiwen2010@gmail.com
- * @Last Modified time: 2018-09-18 10:49:45
+ * @Last Modified time: 2018-11-05 19:06:08
  */
 
 <template>
@@ -101,7 +101,6 @@
             <div class="li" v-for="item in collectionArr" :key="item.ajid">
               <div class="types"><span>{{item.detailType|changeType}}</span><i class="circle"></i></div>
               <div class="content" @click="goDetail(item.detailType,item.ajid)">{{item.title}}</div>
-              <div class="new"></div>
               <div class="btn" @click="unCollection($event,item)">取消收藏</div>
             </div>
           </div>
