@@ -525,7 +525,7 @@ export default {
     },
     // 处理字符串变数组
     arrToString (val) {
-      return val.split('|')
+      return val === null ? [] : val.split('|')
     },
     // 打开新窗口
     openUrl (url, id) {
