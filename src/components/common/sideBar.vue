@@ -17,7 +17,7 @@
         </div>
     </div>
     <div v-if="model==='details'" class="ul details">
-        <div lock='false' class="li" v-if="index<5" v-for="(item,index) in data" :key="index" :style="{height:item.name.length > 19 ? '39px' : '19px'}">
+        <div lock='false' class="li" v-if="index<5" v-for="(item,index) in data" :key="index" :style="{height:item.name.length > 19 ? '40px' : '20px'}">
           <span v-if="item.name.length<=36" @click="showDetail($event)" class="name">{{item.name|subText}}</span>
           <el-tooltip v-if="item.name.length>36" class="item" effect="dark" :content="item.name" placement="right">
             <span @click="showDetail($event)" class="name">{{item.name|subText}}</span>
