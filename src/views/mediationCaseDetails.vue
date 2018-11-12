@@ -119,7 +119,15 @@ export default {
       protocol: [],
       showPeopleDetail: false,
       left: 0,
-      top: 0
+      top: 0,
+      id: this.$route.params.id
+    }
+  },
+  watch: {
+    '$route.params.id': function (val) {
+      this.id = val
+      this.getMediateCaseDetailData()
+      this.getRecommendListData()
     }
   },
   filters: {
@@ -147,6 +155,78 @@ export default {
           })
         }
       })
+    },
+    getMediateCaseDetailData () {
+      // 获取案件
+      let _this = this
+      mediateCaseDetail({'id': _this.id}).then((res) => {
+      // 解构赋值
+        if (res.code === 1) {
+          let {title, system, smallClass, keyword, transactDate, refereeDept, refereed, collectFlag, content, dissensionId, smallClassId} = res.data
+          // 处理下keyword
+          keyword = keyword.split('|')
+          refereed = refereed ? refereed.split('|') : [null]
+          _this.caseDetail = {title, system, smallClass, keyword, transactDate, refereeDept, refereed, dissensionId, smallClassId}
+          _this.collectFlag = collectFlag
+          _this.content = content
+          // 处理下目录
+          _this.catalog = content.map((item) => {
+            return item.name
+          })
+          _this.catalog.unshift('基本信息')
+        } else {
+          Message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      })
+    },
+    getRecommendListData () {
+      // 获取推荐
+      let _this = this
+      recommendList({
+        id: _this.id,
+        detailType: 'mediateCase'
+      }).then((res) => {
+        if (res.code === 1) {
+          let data = res.data
+          // 处理一下数据成为组件标准格式
+          _this.judgement = data.judgement.map((item) => {
+            return {
+              'name': item.title,
+              'value': item.caseId,
+              'content': ''
+            }
+          })
+          _this.law = data.law.map((item) => {
+            return {
+              'name': item.lawItem,
+              'value': item.number,
+              'content': item.content
+            }
+          })
+          _this.mediateCase = data.mediateCase.map((item) => {
+            return {
+              'name': item.title,
+              'value': item.dissensionId,
+              'content': item.mediateCircs
+            }
+          })
+          _this.protocol = data.protocol.map((item) => {
+            return {
+              'name': item.title,
+              'value': item.protocolId,
+              'content': item.dealdispute
+            }
+          })
+        } else {
+          Message({
+            message: '获取推荐列表失败',
+            type: 'warning'
+          })
+        }
+      })
     }
   },
   mounted () {
@@ -155,72 +235,8 @@ export default {
     window.addEventListener('click', function () {
       _this.showPeopleDetail = false
     })
-    // 获取案件
-    mediateCaseDetail({'id': _this.$route.params.id}).then((res) => {
-      // 解构赋值
-      if (res.code === 1) {
-        let {title, system, smallClass, keyword, transactDate, refereeDept, refereed, collectFlag, content, dissensionId, smallClassId} = res.data
-        // 处理下keyword
-        keyword = keyword.split('|')
-        refereed = refereed ? refereed.split('|') : [null]
-        _this.caseDetail = {title, system, smallClass, keyword, transactDate, refereeDept, refereed, dissensionId, smallClassId}
-        _this.collectFlag = collectFlag
-        _this.content = content
-        // 处理下目录
-        _this.catalog = content.map((item) => {
-          return item.name
-        })
-        _this.catalog.unshift('基本信息')
-      } else {
-        Message({
-          message: res.message,
-          type: 'warning'
-        })
-      }
-    })
-    // 获取推荐
-    recommendList({
-      id: _this.$route.params.id,
-      detailType: 'mediateCase'
-    }).then((res) => {
-      if (res.code === 1) {
-        let data = res.data
-        // 处理一下数据成为组件标准格式
-        _this.judgement = data.judgement.map((item) => {
-          return {
-            'name': item.title,
-            'value': item.caseId,
-            'content': ''
-          }
-        })
-        _this.law = data.law.map((item) => {
-          return {
-            'name': item.lawItem,
-            'value': item.number,
-            'content': item.content
-          }
-        })
-        _this.mediateCase = data.mediateCase.map((item) => {
-          return {
-            'name': item.title,
-            'value': item.dissensionId,
-            'content': item.mediateCircs
-          }
-        })
-        _this.protocol = data.protocol.map((item) => {
-          return {
-            'name': item.title,
-            'value': item.protocolId,
-            'content': item.dealdispute
-          }
-        })
-      } else {
-        Message({
-          message: '获取推荐列表失败',
-          type: 'warning'
-        })
-      }
-    })
+    this.getMediateCaseDetailData()
+    this.getRecommendListData()
   }
 }
 </script>
