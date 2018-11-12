@@ -78,7 +78,15 @@ export default {
       collectFlag: 0,
       catalog: [],
       judgement: [],
-      law: []
+      law: [],
+      id: this.$route.params.id
+    }
+  },
+  watch: {
+    '$route.params.id': function (val) {
+      this.id = val
+      this.getJudgementData()
+      this.getRecommendListData()
     }
   },
   filters: {
@@ -90,59 +98,68 @@ export default {
       return val.split('\\n')
     }
   },
-  mounted () {
-    let _this = this
-    // 获取详情
-    judgement({'id': _this.$route.params.id}).then((res) => {
+  methods: {
+    getJudgementData () {
+      // 获取详情
+      let _this = this
+      judgement({'id': _this.$route.params.id}).then((res) => {
       // 解构赋值
-      if (res.code === 1) {
-        let {title, system, smallClass, courtName, keyword, lawFltw, trialDate, collectFlag, content, caseId, classId} = res.data
-        console.log(res)
-        keyword = keyword.split('|')
-        _this.judgementDetail = {title, system, smallClass, keyword, courtName, lawFltw, trialDate, caseId, classId}
-        _this.collectFlag = collectFlag
-        _this.content = content
-        // 处理下目录
-        _this.catalog = content.map((item) => {
-          return item.name
-        })
-        _this.catalog.unshift('基本信息')
-      } else {
-        Message({
-          message: res.message,
-          type: 'warning'
-        })
-      }
-    })
-    // 获取推荐
-    recommendList({
-      id: _this.$route.params.id,
-      detailType: 'judgement'
-    }).then((res) => {
-      if (res.code === 1) {
-        let data = res.data
-        // 处理一下数据成为组件标准格式
-        _this.judgement = data.judgement.map((item) => {
-          return {
-            'name': item.title,
-            'value': item.caseId,
-            'content': ''
-          }
-        })
-        _this.law = data.law.map((item) => {
-          return {
-            'name': item.lawItem,
-            'value': item.number,
-            'content': item.content
-          }
-        })
-      } else {
-        Message({
-          message: '获取推荐列表失败',
-          type: 'warning'
-        })
-      }
-    })
+        if (res.code === 1) {
+          let {title, system, smallClass, courtName, keyword, lawFltw, trialDate, collectFlag, content, caseId, classId} = res.data
+          console.log(res)
+          keyword = keyword.split('|')
+          _this.judgementDetail = {title, system, smallClass, keyword, courtName, lawFltw, trialDate, caseId, classId}
+          _this.collectFlag = collectFlag
+          _this.content = content
+          // 处理下目录
+          _this.catalog = content.map((item) => {
+            return item.name
+          })
+          _this.catalog.unshift('基本信息')
+        } else {
+          Message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      })
+    },
+    getRecommendListData () {
+      // 获取推荐
+      let _this = this
+      recommendList({
+        id: _this.$route.params.id,
+        detailType: 'judgement'
+      }).then((res) => {
+        if (res.code === 1) {
+          let data = res.data
+          // 处理一下数据成为组件标准格式
+          _this.judgement = data.judgement.map((item) => {
+            return {
+              'name': item.title,
+              'value': item.caseId,
+              'content': ''
+            }
+          })
+          _this.law = data.law.map((item) => {
+            return {
+              'name': item.lawItem,
+              'value': item.number,
+              'content': item.content
+            }
+          })
+        } else {
+          Message({
+            message: '获取推荐列表失败',
+            type: 'warning'
+          })
+        }
+      })
+    }
+  },
+  mounted () {
+    this.getJudgementData()
+    this.getRecommendListData()
   }
 }
 </script>
