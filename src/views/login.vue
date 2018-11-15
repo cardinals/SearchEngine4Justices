@@ -215,10 +215,19 @@ export default {
     }
   },
   mounted () {
-    // 是否已经登录
-    this.isLogined()
-    // 获取验证码
-    this.getYzm()
+    // // 是否已经登录
+    // this.isLogined()
+    // // 获取验证码
+    // this.getYzm()
+    // 模拟登陆
+    login({
+      username: 's1',
+      password: '102102102'
+    }).then((res) => {
+      if (res.code === 1) {
+        this.$router.push('/home')
+      }
+    })
   }
 }
 </script>
