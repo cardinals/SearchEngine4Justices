@@ -10,7 +10,7 @@
     <div class="main" >
       <div @click="$router.push('/home')" v-if="$route.fullPath!=='/home'" class="logo_c clearfix">
         <i class="logo"></i>
-        <span class="title">同案同调</span>
+        <span class="title">法案智搜</span>
       </div>
       <div  v-if="$route.fullPath!=='/home'" class="search_c">
         <div class="select_c">
