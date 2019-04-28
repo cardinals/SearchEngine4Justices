@@ -40,7 +40,7 @@
             <span>关键词</span>
           </div>
           <div class="main">
-            <div v-if="keywordAggs.length>0" @click="addKeyword(item)" class="once" v-for="(item,index) in keywordAggs" :key="index">
+            <div @click="addKeyword(item)" class="once" v-for="(item,index) in keywordAggs" :key="index">
               <i class="circle"></i>
               <span class="">{{item.name + '(' + item.value + ')'}}</span>
             </div>
@@ -183,7 +183,7 @@
           </div>
           <!-- 法律条文适配 -->
           <div class="law_keyword clearfix" v-if="searchType==='law'&&item.keyword!==''">
-            <span class="keyword" v-for="(keyword,index) in arrToString(item.keyword)" :key="index" v-if="index<3">{{keyword}}</span>
+            <span class="keyword" v-for="(keyword,index) in arrToString(item.keyword).slice(0,3)" :key="index">{{keyword}}</span>
           </div>
         </div>
         <div class="nodataImg" v-if="renderList.length===0">找不到搜索结果</div>
