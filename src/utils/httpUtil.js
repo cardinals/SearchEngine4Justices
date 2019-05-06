@@ -2,7 +2,7 @@
  * @Author: wupeiwen javapeiwen2010@gmail.com
  * @Date: 2018-08-14 09:28:41
  * @Last Modified by: wupeiwen javapeiwen2010@gmail.com
- * @Last Modified time: 2018-10-22 18:41:26
+ * @Last Modified time: 2019-05-06 08:49:21
  */
 
 import axios from 'axios'
@@ -24,7 +24,7 @@ axios.defaults.timeout = 20000
 axios.interceptors.request.use(
   config => {
     // 打开加载遮罩
-    if (!(config.url === '/SearchCase/user/loginStatus') && !(config.url === '/SearchCase/suggest/hanZi') && !(config.url === '/SearchCase/suggest/pinYin')) {
+    if (!(config.url === '/SearchCase/user/loginStatus') && !(config.url === '/SearchCase/suggest/hanZi') && !(config.url === '/SearchCase/suggest/pinYin') && !(config.url === '/SearchCase/mediate/list') && !(config.url === '/SearchCase/mediate/log')) {
       store.dispatch({ type: 'app/changeLoadingStatus', amount: true })
     }
     // 在http请求的header都加上token
@@ -41,7 +41,7 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   response => {
     // 关闭加载遮罩
-    if (!(response.config.url === '/SearchCase/user/loginStatus') && !(response.config.url === '/SearchCase/suggest/hanZi') && !(response.config.url === '/SearchCase/suggest/pinYin')) {
+    if (!(response.config.url === '/SearchCase/user/loginStatus') && !(response.config.url === '/SearchCase/suggest/hanZi') && !(response.config.url === '/SearchCase/suggest/pinYin') && !(response.config.url === '/SearchCase/mediate/list') && !(response.config.url === '/SearchCase/mediate/log')) {
       store.dispatch({ type: 'app/changeLoadingStatus', amount: false })
     }
     // 未登录状态跳转登录页

@@ -179,6 +179,11 @@ export default {
       this.changeSearchType(_this.searchType)
       if (this.searchVal !== '') {
         this.$router.push('/searchList/' + _this.searchType + '/' + _this.searchVal)
+      } else {
+        Message({
+          message: '请输入搜索信息',
+          type: 'warning'
+        })
       }
     }
   },

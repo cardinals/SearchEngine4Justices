@@ -40,7 +40,7 @@
             <span>关键词</span>
           </div>
           <div class="main">
-            <div v-if="keywordAggs.length>0" @click="addKeyword(item)" class="once" v-for="(item,index) in keywordAggs" :key="index">
+            <div @click="addKeyword(item)" class="once" v-for="(item,index) in keywordAggs" :key="index">
               <i class="circle"></i>
               <span class="">{{item.name + '(' + item.value + ')'}}</span>
             </div>
@@ -183,10 +183,10 @@
           </div>
           <!-- 法律条文适配 -->
           <div class="law_keyword clearfix" v-if="searchType==='law'&&item.keyword!==''">
-            <span class="keyword" v-for="(keyword,index) in arrToString(item.keyword)" :key="index" v-if="index<3">{{keyword}}</span>
+            <span class="keyword" v-for="(keyword,index) in arrToString(item.keyword).slice(0,3)" :key="index">{{keyword}}</span>
           </div>
         </div>
-        <div class="nodataImg" v-if="renderList.length===0">找不到搜索结果</div>
+        <div class="nodataImg" v-if="renderList.length===0">根据搜索条件未匹配到相应结果</div>
         <div v-if="renderList.length!==0" class="page">
           <el-pagination
             background
@@ -260,41 +260,48 @@ export default {
           name: this.caseType
         })
       }
-      this.keyword.forEach((item) => {
-        arr.push({
-          type: 'keyword',
-          val: '关键词:' + item,
-          name: item
+      if (this.keyword.length !== 0) {
+        this.keyword.map((item) => {
+          arr.push({
+            type: 'keyword',
+            val: '关键词:' + item,
+            name: item
+          })
         })
-      })
+      }
       return arr
     }
   },
   watch: {
     // 监控跟搜索有关的参数
-    keywordArr: function (to, from) {
-      let _this = this
+    keywordArr: function (newVal, oldVal) {
       this.currentPage = 1
-      clearTimeout(_this.timeout)
-      _this.timeout = setTimeout(function () {
-        _this.searchListInit().then(() => {
-          _this.render()
-        })
-      }, 1000)
+      this.searchListInit()
     },
-    sortFlag: function (to, from) {
-      let _this = this
-      this.currentPage = 1
-      this.searchListInit().then(() => {
-        _this.render()
-      })
+    searchVal: function (newVal, oldVal) {
+      if (oldVal !== '' && oldVal !== newVal) {
+        // this.$router.push('/searchList/' + this.searchType + '/' + newVal)
+        // this.$store.commit('header/changeSearchVal', newVal)
+        this.caseType = ''
+        this.caseTypeId = ''
+        this.keyword = []
+      }
     },
-    searchType: function (to, from) {
-      let _this = this
+    caseType: function (newVal, oldVal) {
+      if (oldVal !== newVal) {
+        this.keyword = []
+      }
+    },
+    sortFlag: function (newVal, oldVal) {
       this.currentPage = 1
-      this.searchListInit().then(() => {
-        _this.render()
-      })
+      this.searchListInit()
+    },
+    searchType: function (newVal, oldVal) {
+      this.currentPage = 1
+      if (oldVal !== newVal) {
+        this.caseType = ''
+        this.keyword = []
+      }
     }
   },
   filters: {
@@ -338,10 +345,7 @@ export default {
             if (data.protocol && data.protocol.length >= 1) { _this.protocol = data.protocol.slice(0, 2) }
             if (data.mediateCase && data.mediateCase.length >= 1) { _this.mediateCase = data.mediateCase.slice(0, 2) }
           } else {
-            Message({
-              message: res.message,
-              type: 'warning'
-            })
+            _this.showMessage(res.message, 'warning')
           }
           _this.state = val
           _this.dissensionId = id
@@ -384,63 +388,48 @@ export default {
       this.caseType = data.realName
       this.caseTypeId = data.id
     },
-    // 搜索接口
-    searchListApi () {
-      let _this = this
-      this.commitLog()
-      return new Promise((resolve, reject) => {
-        searchList({
-          query: _this.searchVal,
-          queryType: _this.searchType,
-          caseType: _this.caseTypeId,
-          keyword: _this.keyword,
-          sortFlag: _this.sortFlag
-        }).then((res) => {
-          resolve(res)
-        }).catch((err) => {
-          reject(err)
-        })
+    // 搜索接口&&初始化搜索列表
+    async searchListInit () {
+      const _this = this
+      _this.$store.dispatch({ type: 'app/changeLoadingStatus', amount: true })
+      _this.commitLog()
+      const res = await searchList({
+        query: _this.searchVal,
+        queryType: _this.searchType,
+        caseType: _this.caseTypeId,
+        keyword: _this.keyword,
+        sortFlag: _this.sortFlag
       })
-    },
-    // 初始化搜索列表
-    searchListInit () {
-      let _this = this
-      return new Promise((resolve, reject) => {
-        _this.searchListApi().then((res) => {
-          let data = res.data
-          if (res.code === 1) {
-            // 左侧案件分类树和关键词
-            _this.treeData = data.typeAggs.map((item) => {
-              item.children = item.children || []
+      let data = res.data
+      if (res.code === 1) {
+        // 左侧案件分类树和关键词
+        _this.treeData = data.typeAggs.map((item) => {
+          item.children = item.children || []
+          return {
+            'name': item.name + '(' + item.value + ')',
+            'realName': item.name,
+            'id': item.typeId,
+            'children': item.children.map((item) => {
               return {
                 'name': item.name + '(' + item.value + ')',
                 'realName': item.name,
-                'id': item.typeId,
-                'children': item.children.map((item) => {
-                  return {
-                    'name': item.name + '(' + item.value + ')',
-                    'realName': item.name,
-                    'id': item.typeId
-                  }
-                })
+                'id': item.typeId
               }
-            })
-            _this.keywordAggs = data.keywordAggs
-            // 分页
-            _this.pageTotal = data.result.length
-            // 记录原始数据
-            _this.primaryList = data.result
-            // 记录关键词
-            _this.keyRex = data.queryKeyword
-            resolve()
-          } else {
-            Message({
-              message: res.message,
-              type: 'warning'
             })
           }
         })
-      })
+        _this.keywordAggs = data.keywordAggs
+        // 分页
+        _this.pageTotal = data.result.length
+        // 记录原始数据
+        _this.primaryList = data.result
+        // 记录关键词
+        _this.keyRex = data.queryKeyword
+      } else {
+        _this.showMessage(res.message, 'warning')
+      }
+      _this.render()
+      _this.$store.dispatch({ type: 'app/changeLoadingStatus', amount: false })
     },
     // 渲染搜索列表
     render () {
@@ -494,15 +483,9 @@ export default {
       if (val.value !== 0 && this.keyword.indexOf(val.name) === -1) {
         this.keyword.push(val.name)
       } else if (this.keyword.indexOf(val.name) !== -1) {
-        Message({
-          message: '请不要重复选取关键词',
-          type: 'warning'
-        })
+        this.showMessage('请不要重复选取关键词', 'warning')
       } else if (val.value === 0) {
-        Message({
-          message: '找不到该关键词的搜索结果  ',
-          type: 'warning'
-        })
+        this.showMessage('找不到该关键词的搜索结果', 'warning')
       }
     },
     // 删除关键词
@@ -530,16 +513,20 @@ export default {
     // 打开新窗口
     openUrl (url, id) {
       window.open(window.location.origin + '/#/' + url + '/' + id)
+    },
+    showMessage (message, type, duration) {
+      Message({
+        message: message || '',
+        type: type || 'warning',
+        duration: duration || 2000
+      })
     }
   },
   mounted () {
-    let _this = this
     // 优化刷新网页的时候状态丢失
-    this.$store.commit('header/changeSearchType', _this.$route.params.type)
-    this.$store.commit('header/changeSearchVal', _this.$route.params.val)
-    this.searchListInit().then(() => {
-      _this.render()
-    })
+    this.$store.commit('header/changeSearchType', this.$route.params.type)
+    this.$store.commit('header/changeSearchVal', this.$route.params.val)
+    this.searchListInit()
   }
 }
 </script>
