@@ -27,5 +27,8 @@ COPY ./config.sh "/opt/"
 # 解决文件可能出现的换行符乱码问题
 RUN sed -i 's/\r$//g' "/opt/config.sh"
 
+# 文件赋权
+RUN chmod +x "/opt/config.sh"
+
 # 运行config脚本
 ENTRYPOINT ["/opt/config.sh"]
