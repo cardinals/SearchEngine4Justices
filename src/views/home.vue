@@ -2,7 +2,7 @@
  * @Author: wupeiwen javapeiwen2010@gmail.com
  * @Date: 2018-08-27 14:03:38
  * @Last Modified by: wupeiwen javapeiwen2010@gmail.com
- * @Last Modified time: 2018-11-05 19:06:08
+ * @Last Modified time: 2019-05-17 11:57:42
  */
 
 <template>
@@ -335,23 +335,6 @@ export default {
   }
 }
 </script>
-<style lang="less">
-.home{
-  .inline-input{
-    float: left;
-    height: 65px;
-    width: calc(100% - 84px);
-    border-radius:4px 0px 0px 4px;
-    border:1px solid rgba(231,229,229,1);
-  }
-  .el-input__inner{
-    font-size:18px;
-    height: 63px;
-    border:0;
-    border-radius:4px 0px 0px 4px;
-  }
-}
-</style>
 
 <style lang="less" scoped>
   @import '~@/assets/css/home.less';

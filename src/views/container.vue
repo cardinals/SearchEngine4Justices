@@ -2,7 +2,7 @@
  * @Author: wupeiwen javapeiwen2010@gmail.com
  * @Date: 2018-09-18 10:05:15
  * @Last Modified by: wupeiwen javapeiwen2010@gmail.com
- * @Last Modified time: 2018-09-18 10:51:24
+ * @Last Modified time: 2019-05-17 11:56:21
  */
 
 <template>
@@ -57,9 +57,19 @@ export default {
       margin:auto;
     }
   }
-  // 遮罩样式
-  .el-loading-mask{
-    position: fixed!important;
-    z-index: 9999!important;//设置层级为最高
+    // 过渡动画
+  .rotate-enter-active{
+    transition:0.6s ease;
+  }
+  .rotate-leave-active{
+    transition: 0.4s ease;
+  }
+  .rotate-enter{
+    opacity: 0;
+    transform: rotateY(180deg);
+  }
+  .rotate-leave-to{
+    opacity: 0;
+    transform: rotateY(180deg);
   }
 </style>

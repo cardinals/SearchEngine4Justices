@@ -2,11 +2,76 @@
  * @Author: wupeiwen javapeiwen2010@gmail.com 
  * @Date: 2018-08-21 11:32:15 
  * @Last Modified by: wupeiwen javapeiwen2010@gmail.com
- * @Last Modified time: 2018-09-18 10:24:41
+ * @Last Modified time: 2019-05-17 11:59:44
  * @Description: 修改elementui默认样式
  */  
 
-  // 修改时间范围选择器组件的宽度
-  .el-date-editor--daterange.el-input, .el-date-editor--daterange.el-input__inner, .el-date-editor--timerange.el-input, .el-date-editor--timerange.el-input__inner {
-    width: 220px !important;
-  } 
+  // 遮罩样式
+  .el-loading-mask{
+    position: fixed!important;
+    z-index: 9999!important;//设置层级为最高
+  }
+  
+  .el-pager{
+    .number{
+      background-color: #ffffff!important;
+    }
+    .active{
+      background-color: #669AFF!important;
+    }
+  }
+  .el-pagination button{
+    background-color:#ffffff!important;
+  }
+  .el-tree-node__expand-icon{
+    color:#808080;
+  }
+  .el-tree-node__expand-icon.is-leaf{
+    margin-left:10px;
+    margin-right: 8px;
+    padding:2.5px;
+    font-size: 0;
+    border-radius: 50%;
+    background: #808080;
+  }
+  .el-tree-node__content{
+    &:hover{
+      .el-tree-node__expand-icon{
+        color:#669AFF;
+      }
+      .el-tree-node__expand-icon.is-leaf{
+        background: #669AFF;
+      }
+      color:#669AFF;
+      background: rgb(240,240,240)
+    }
+  }
+  .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content{
+    background: rgb(240,240,240);
+    color:#669AFF;
+    .el-tree-node__expand-icon.is-leaf{
+      background: #669AFF;
+    }
+    .el-tree-node__expand-icon{
+      color:#669AFF;
+    }
+  }
+  .el-pagination.is-background .el-pager li:not(.disabled).active{
+    background: #669AFF;
+  }
+
+  .home{
+    .inline-input{
+      float: left;
+      height: 65px;
+      width: calc(100% - 84px);
+      border-radius:4px 0px 0px 4px;
+      border:1px solid rgba(231,229,229,1);
+    }
+    .el-input__inner{
+      font-size:18px;
+      height: 63px;
+      border:0;
+      border-radius:4px 0px 0px 4px;
+    }
+  }
