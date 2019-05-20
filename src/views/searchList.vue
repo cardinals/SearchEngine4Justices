@@ -315,48 +315,48 @@ export default {
   },
   methods: {
     // 展示列表的下拉框
-    showDom (ev, val, id) {
-      let _this = this
+    async showDom (ev, val, id) {
       // 选取节点
       let node = this.$refs[id][0]
       // 优化一下推荐列表接口的调用
       if (this.dissensionId === id) {
+        // 切换到该条结果的其他推荐类别
         if (this.state !== val) {
           this.state = val
           this.$nextTick(() => {
-            node.style.height = node.firstElementChild.offsetHeight + 11 + 'px'
+            node.style.height = `${node.firstElementChild.offsetHeight + 11}px`
           })
         } else {
+          // 关闭推荐列表
           this.state = ''
           this.$nextTick(() => {
-            node.style.height = node.firstElementChild.offsetHeight + 11 + 'px'
+            node.style.height = `${node.firstElementChild.offsetHeight + 11}px`
           })
         }
       } else {
         // 获取推荐列表
-        recommendList({
+        const res = await recommendList({
           id: id,
-          detailType: _this.searchType
-        }).then((res) => {
-          if (res.code === 1) {
-            let data = res.data
-            if (data.judgement && data.judgement.length >= 1) { _this.judgement = data.judgement.slice(0, 2) }
-            if (data.law && data.law.length >= 1) { _this.law = data.law.slice(0, 2) }
-            if (data.protocol && data.protocol.length >= 1) { _this.protocol = data.protocol.slice(0, 2) }
-            if (data.mediateCase && data.mediateCase.length >= 1) { _this.mediateCase = data.mediateCase.slice(0, 2) }
-          } else {
-            _this.showMessage(res.message, 'warning')
+          detailType: this.searchType
+        })
+        if (res.code === 1) {
+          let data = res.data
+          if (data.judgement && data.judgement.length >= 1) { this.judgement = data.judgement.slice(0, 2) }
+          if (data.law && data.law.length >= 1) { this.law = data.law.slice(0, 2) }
+          if (data.protocol && data.protocol.length >= 1) { this.protocol = data.protocol.slice(0, 2) }
+          if (data.mediateCase && data.mediateCase.length >= 1) { this.mediateCase = data.mediateCase.slice(0, 2) }
+        } else {
+          this.showMessage(res.message, 'warning')
+        }
+        this.state = val
+        this.dissensionId = id
+        // 更新dom后再修改高度
+        this.$nextTick(() => {
+          if (this.prevDom !== '') {
+            this.$refs[this.prevDom][0].style.cssText = ''
           }
-          _this.state = val
-          _this.dissensionId = id
-          // 更新dom后再修改高度
-          _this.$nextTick(() => {
-            if (_this.prevDom !== '') {
-              _this.$refs[_this.prevDom][0].style.cssText = ''
-            }
-            node.style.height = node.firstElementChild.offsetHeight + 11 + 'px'
-            _this.prevDom = id
-          })
+          node.style.height = `${node.firstElementChild.offsetHeight + 11}px`
+          this.prevDom = id
         })
       }
     },
@@ -390,20 +390,19 @@ export default {
     },
     // 搜索接口&&初始化搜索列表
     async searchListInit () {
-      const _this = this
-      _this.$store.dispatch({ type: 'app/changeLoadingStatus', amount: true })
-      _this.commitLog()
+      this.$store.dispatch({ type: 'app/changeLoadingStatus', amount: true })
+      this.commitLog()
       const res = await searchList({
-        query: _this.searchVal,
-        queryType: _this.searchType,
-        caseType: _this.caseTypeId,
-        keyword: _this.keyword,
-        sortFlag: _this.sortFlag
+        query: this.searchVal,
+        queryType: this.searchType,
+        caseType: this.caseTypeId,
+        keyword: this.keyword,
+        sortFlag: this.sortFlag
       })
       let data = res.data
       if (res.code === 1) {
         // 左侧案件分类树和关键词
-        _this.treeData = data.typeAggs.map((item) => {
+        this.treeData = data.typeAggs.map((item) => {
           item.children = item.children || []
           return {
             'name': item.name + '(' + item.value + ')',
@@ -418,18 +417,18 @@ export default {
             })
           }
         })
-        _this.keywordAggs = data.keywordAggs
+        this.keywordAggs = data.keywordAggs
         // 分页
-        _this.pageTotal = data.result.length
+        this.pageTotal = data.result.length
         // 记录原始数据
-        _this.primaryList = data.result
+        this.primaryList = data.result
         // 记录关键词
-        _this.keyRex = data.queryKeyword
+        this.keyRex = data.queryKeyword
       } else {
-        _this.showMessage(res.message, 'warning')
+        this.showMessage(res.message, 'warning')
       }
-      _this.render()
-      _this.$store.dispatch({ type: 'app/changeLoadingStatus', amount: false })
+      this.render()
+      this.$store.dispatch({ type: 'app/changeLoadingStatus', amount: false })
     },
     // 渲染搜索列表
     render () {
