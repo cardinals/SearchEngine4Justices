@@ -1,21 +1,30 @@
-# 司法领域的搜索引擎
+# kt-oa-igsp/searchengine-web 司法领域的搜索引擎
 
-## Project setup
+## 开发环境
+### 安装依赖
 ```
-yarn install
+yarn
 ```
-
-### Compiles and hot-reloads for development
+### 运行开发环境
 ```
-yarn run serve
-```
-
-### Compiles and minifies for production
-```
-yarn run build
+yarn serve
 ```
 
-### Lints and fixes files
+## 构建
+### Docker镜像
+#### 安装依赖
 ```
-yarn run lint
+yarn
+```
+#### 构建镜像
+```
+yarn build-image
+```
+#### 修改镜像tag
+```
+docker tag 192.168.93.172/kt-oa-igsp/searchengine-web:latest 192.168.93.172/kt-oa-igsp/searchengine-web:<版本号>
+```
+#### 将镜像启动为容器
+```
+docker run --name=searchengine-web --restart=always -d -p <前端Port>:80 -e LOCATION='\/SearchCase' -e PROXY_PASS='http:\/\/<接口IP>:<接口Port>' 192.168.93.172/kt-oa-igsp/searchengine-web:<版本号>
 ```
