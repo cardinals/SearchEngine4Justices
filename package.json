@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build-image": "yarn build &&  docker build -t nginx/search-engine ./docker",
+    "build-image": "yarn build &&  docker build -t 192.168.93.172/kt-oa-igsp/searchengine-web:latest ./docker",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
